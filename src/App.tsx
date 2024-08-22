@@ -8,7 +8,7 @@ export default function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<MainLayout/>}>
-            <Route index path="/foryou" element={<ForYou/>}/>
+            <Route index element={<ForYou/>}/>
           </Route>
         </Routes>
       </BrowserRouter>
