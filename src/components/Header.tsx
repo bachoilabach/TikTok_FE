@@ -15,6 +15,7 @@ import { useState } from 'react';
 
 function Header() {
 	const [openMenu, setOpenMenu] = useState(false);
+	const [valueInputSearch, setValueValueInputSearch] = useState<string>('');
 
 	type btn = {
 		icon: unknown;
@@ -48,6 +49,11 @@ function Header() {
 		},
 	];
 
+	const handleChangeInputSeacrh = (e: React.ChangeEvent<HTMLInputElement>) => {
+		console.log(e.target.value);
+		setValueValueInputSearch(e.target.value);
+	};
+
 	return (
 		<div className="bg-[#121212] w-screen h-16 flex items-center px-5 justify-between">
 			<div className="w-[300px] hover:cursor-pointer">
@@ -57,6 +63,8 @@ function Header() {
 				<input
 					className="flex-1 border-none outline-none bg-transparent ml-4 placeholder-[#ffffffe6] text-lg text-[#ffffffe6] font-medium"
 					placeholder="Search"
+					value={valueInputSearch}
+					onChange={handleChangeInputSeacrh}
 				/>
 				<span className="w-[1px] h-7 bg-[#ffffff1f]" />
 				<div className="h-[44px] w-[50px] bg-transparent rounded-r-full group-hover:bg-[#ffffff1f] flex items-center group-focus-within:bg-[#ffffff1f]">
@@ -88,8 +96,8 @@ function Header() {
 						xmlns="http://www.w3.org/2000/svg"
 						className="mr-1">
 						<path
-							fill-rule="evenodd"
-							clip-rule="evenodd"
+							fillRule="evenodd"
+							clipRule="evenodd"
 							d="M8 2.5C7.58579 2.5 7.25 2.83579 7.25 3.25V7.25H3.25C2.83579 7.25 2.5 7.58579 2.5 8C2.5 8.41421 2.83579 8.75 3.25 8.75H7.25V12.75C7.25 13.1642 7.58579 13.5 8 13.5C8.41421 13.5 8.75 13.1642 8.75 12.75V8.75H12.75C13.1642 8.75 13.5 8.41421 13.5 8C13.5 7.58579 13.1642 7.25 12.75 7.25H8.75V3.25C8.75 2.83579 8.41421 2.5 8 2.5Z"></path>
 					</svg>
 					<p className="text-xl font-semibold">Upload</p>
@@ -146,13 +154,11 @@ function Header() {
 							variant="circular"
 							className="cursor-pointer"
 							placeholder={undefined}
-							onPointerEnterCapture={undefined}
-							onPointerLeaveCapture={undefined}
 						/>
 					</MenuHandler>
 					<MenuList className="bg-[#333333] text-white ">
 						<div className="-mx-3 -my-2">
-							{listBtn.map(({name, icon}, index) => (
+							{listBtn.map(({ name, icon }, index) => (
 								<div key={name}>
 									{index === listBtn.length - 1 ? (
 										<hr className="my-3 border-white" />
