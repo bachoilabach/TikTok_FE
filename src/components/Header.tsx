@@ -156,7 +156,11 @@ function Header() {
 							placeholder={undefined}
 						/>
 					</MenuHandler>
-					<MenuList className="bg-[#333333] text-white ">
+					<MenuList
+						className="bg-[#333333] text-white "
+						placeholder={undefined}
+						onPointerEnterCapture={undefined}
+						onPointerLeaveCapture={undefined}>
 						<div className="-mx-3 -my-2">
 							{listBtn.map(({ name, icon }, index) => (
 								<div key={name}>
@@ -165,9 +169,18 @@ function Header() {
 									) : (
 										''
 									)}
-									<MenuItem className="pl-2 flex items-center rounded-none hover:bg-[#444444] hover:text-white">
+									<MenuItem
+										className="pl-2 flex items-center rounded-none hover:bg-[#444444] hover:text-white"
+										placeholder={undefined}
+										onPointerEnterCapture={undefined}
+										onPointerLeaveCapture={undefined}>
 										<FontAwesomeIcon icon={icon} className="w-[20px]" />
-										<Typography variant="small" className="font-medium ml-3">
+										<Typography
+											variant="small"
+											className="font-medium ml-3"
+											placeholder={undefined}
+											onPointerEnterCapture={undefined}
+											onPointerLeaveCapture={undefined}>
 											{name}
 										</Typography>
 									</MenuItem>
