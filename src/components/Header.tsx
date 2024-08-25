@@ -18,7 +18,7 @@ function Header() {
 	const [valueInputSearch, setValueValueInputSearch] = useState<string>('');
 
 	type btn = {
-		icon: unknown;
+		icon?: Icons.IconDefinition;
 		name: string;
 	};
 
