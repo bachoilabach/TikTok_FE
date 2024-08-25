@@ -17,7 +17,7 @@ function Header() {
 	const [openMenu, setOpenMenu] = useState(false);
 
 	type btn = {
-		icon: unknown;
+		icon?: Icons.IconDefinition;
 		name: string;
 	};
 
