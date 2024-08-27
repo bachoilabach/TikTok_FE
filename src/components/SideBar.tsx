@@ -139,7 +139,8 @@ function SideBar() {
 									}
 									variant="circular"
 									alt=""
-									size="sm"
+									
+									style={{ width: '35px', height: '35px' }}
 									placeholder={undefined}
 									onPointerEnterCapture={undefined}
 									onPointerLeaveCapture={undefined}
