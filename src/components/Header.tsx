@@ -153,8 +153,7 @@ function Header() {
 							size="sm"
 							variant="circular"
 							className="cursor-pointer"
-							placeholder={undefined}
-						/>
+							placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}						/>
 					</MenuHandler>
 					<MenuList
 						className="bg-[#333333] text-white "
