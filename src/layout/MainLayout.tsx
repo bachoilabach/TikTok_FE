@@ -6,9 +6,12 @@ function MainLayout() {
 	return (
 		<>
 			<Header />
-			<div className='flex'>
+			<div className="flex">
 				<SideBar />
-				<Outlet />
+
+				<div className='w-full h-full bg-black'>
+					<Outlet />
+				</div>
 			</div>
 		</>
 	);
