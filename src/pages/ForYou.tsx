@@ -1,7 +1,9 @@
+import Video from "../components/Video";
+
 function ForYou() {
 	return (
-        <>
-            <div>For You</div>
+        <> 
+            <Video />
         </>
     )
 }
