@@ -59,7 +59,7 @@ function Header() {
 			<div className="w-[300px] hover:cursor-pointer">
 				<img src={logo} width={140} alt="Tik Ok" />
 			</div>
-			<form className="w-[555px] h-[46px] bg-[#ffffff1f] flex items-center pl-0.5 py-2 rounded-full border-transparent hover:border-[#ffffff33] border group focus-within:border-[#ffffff33]">
+			<form className="w-[555px] h-[46px] bg-[#ffffff1f] flex items-center pl-0.5 py-2 rounded-full border-transparent hover:border-[#ffffff33] border group focus-within:border-[#ffffff33] ml-12">
 				<input
 					className="flex-1 border-none outline-none bg-transparent ml-4 placeholder-[#ffffffe6] text-lg text-[#ffffffe6] font-medium"
 					placeholder="Search"
@@ -153,7 +153,8 @@ function Header() {
 							size="sm"
 							variant="circular"
 							className="cursor-pointer"
-							placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}						/>
+							placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}						
+						/>
 					</MenuHandler>
 					<MenuList
 						className="bg-[#333333] text-white "
