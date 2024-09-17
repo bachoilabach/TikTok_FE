@@ -9,7 +9,7 @@ function MainLayout() {
 			<div className="flex">
 				<SideBar />
 
-				<div className='w-full h-full bg-black py-4 pl-4 pr-40'>
+				<div className='w-full h-[90%] bg-black py-4 pl-4 pr-40'>
 					<Outlet />
 				</div>
 			</div>
