@@ -9,20 +9,28 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Avatar } from '@material-tailwind/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-type Props = {};
+interface SideVideoProps {
+	likeQuantity: number;
+	commentQuantity: number;
+};
 
-// eslint-disable-next-line no-empty-pattern
-export default function SideVideo({}: Props) {
+export default function SideVideo({likeQuantity,commentQuantity}: SideVideoProps) {
 	const [like, setLike] = useState<boolean>(false);
+	const [localLikeQuantity, setLocalLikeQuantity] = useState<number>(likeQuantity);
 	const [save, setSave] = useState<boolean>(false);
 	const [showFollowIcon, setShowFollowIcon] = useState<boolean>(true);
 	const [icon, setIcon] = useState(faPlus);
+	const [localCommentQuantity, setLocalCommentQuantity] = useState<number>(commentQuantity);
 
 	const handleClickLike = () => {
+		if (like) {
+			setLocalLikeQuantity(likeQuantity);
+		} else {
+			setLocalLikeQuantity(likeQuantity + 1);
+		}
 		setLike(!like);
 	};
 
@@ -36,6 +44,10 @@ export default function SideVideo({}: Props) {
 			setShowFollowIcon(false); // Sau 2 giây, ẩn icon
 		}, 2000);
 	};
+
+	useEffect(()=>{
+		
+	},[])
 
 	return (
 		<div className="text-white flex flex-col justify-end h-[100%] space-y-2">
@@ -69,7 +81,7 @@ export default function SideVideo({}: Props) {
 						className={`${like ? 'text-red-600' : 'text-[#E9E9E9]'}`}
 					/>
 				</span>
-				<p className="font-semibold mt-1 text-sm">1234</p>
+				<p className="font-semibold mt-1 text-sm">{localLikeQuantity}</p>
 			</div>
 
 			<div className="flex flex-col items-center">
@@ -78,7 +90,7 @@ export default function SideVideo({}: Props) {
 						<FontAwesomeIcon icon={faCommentDots} fontSize={24} />
 					</span>
 				</Link>
-				<p className="font-semibold mt-1 text-sm">1234</p>
+				<p className="font-semibold mt-1 text-sm">{localCommentQuantity}</p>
 			</div>
 
 			<div className="flex flex-col items-center">
