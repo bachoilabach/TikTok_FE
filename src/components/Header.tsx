@@ -55,7 +55,7 @@ function Header() {
 	};
 
 	return (
-		<div className="bg-[#121212] w-screen h-16 flex items-center px-5 justify-between">
+		<div className="bg-[#121212] w-full h-16 flex items-center px-5 justify-between">
 			<div className="w-[300px] hover:cursor-pointer">
 				<img src={logo} width={140} alt="Tik Ok" />
 			</div>
