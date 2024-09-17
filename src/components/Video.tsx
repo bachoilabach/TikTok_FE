@@ -1,25 +1,26 @@
 import { faPause, faPlayCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Tooltip } from '@material-tailwind/react';
-import { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import SideVideo from './SideVideo';
 
-/* eslint-disable @typescript-eslint/no-unused-vars */
-interface VideoProps {
+export interface VideoProps {
 	videoID: string;
-	createdDate: Date;
+	userID: string;
 	title: string;
+	videoUrl: string;
 	duration: number;
 	viewQuantity: number;
-	whoCanView: number;
-	allowComment: number;
 	commentQuantity: number;
 	likeQuantity: number;
-	userID: string;
+	// allowComment: number;
+	// whoCanView: number;
+	// createdDate: Date;
 }
 
-function Video() {
+const Video = forwardRef<HTMLVideoElement, VideoProps>( (props,ref) => {
+	const { videoID, userID, title, videoUrl, commentQuantity, likeQuantity } = props;
 	// * State
 	const [play, setPlay] = useState<boolean>(true);
 	const [animate, setAnimate] = useState<boolean>(false);
@@ -28,8 +29,9 @@ function Video() {
 	const [showVolumeControl, setShowVolumeControl] = useState<boolean>(false);
 	const [contentExpanded, setContentExpended] = useState<boolean>(false);
 	const [currentTime, setCurrentTime] = useState<number>(0);
-	const [duration, setDuration] = useState<number>(0);
-	const videoRef = useRef<HTMLVideoElement>(null);
+	const [durationVideo, setDurationVideo] = useState<number>(0);
+	const videoRef = useRef<HTMLVideoElement | null>(null);
+	useImperativeHandle(ref, () => videoRef.current as HTMLVideoElement);
 	const [videoDimensions, setVideoDimensions] = useState({
 		width: 0,
 		height: 0,
@@ -88,8 +90,7 @@ function Video() {
 			const width = videoRef.current.videoWidth;
 			const height = videoRef.current.videoHeight;
 			setVideoDimensions({ width, height });
-			console.log(videoDimensions);
-			setDuration(videoRef.current.duration);
+			setDurationVideo(videoRef.current.duration);
 		}
 	};
 
@@ -109,11 +110,11 @@ function Video() {
 	};
 
 	useEffect(() => {
-		console.log(videoDimensions);
+		console.log(videoRef.current)
 	}, []);
 
 	return (
-		<div className='flex space-x-4 h-[100%] w-[100%] justify-center '>
+		<div className="flex space-x-4 h-[100%] w-[100%] justify-center" key={videoID}>
 			<div
 				className={`relative h-[100%] rounded-2xl hover:cursor-pointer group flex flex-col items-center`}
 				style={{ width: `${(625 + 365) / 2}px` }}
@@ -124,9 +125,9 @@ function Video() {
 					ref={videoRef}
 					onLoadedMetadata={handleLoadedMetadata}
 					onTimeUpdate={handleTimeUpdate}
-					className="absolute top-0 left-50 h-[100%] object-fill rounded-2xl text-white z-0"
-					playsInline>
-					<source src="src\video\khabank.mp4" type="video/mp4" />
+					className="absolute top-0 w-full h-[100%] object-fill rounded-2xl text-white z-0"
+					>
+					<source src={videoUrl} type="video/mp4" />
 					Your browser does not support the video tag.
 				</video>
 				{/* Top */}
@@ -230,7 +231,7 @@ function Video() {
 					className="px-3 pb-2 absolute bottom-0 text-white w-full"
 					onClick={(e) => e.stopPropagation()}>
 					<Link to={''} className="font-semibold text-xl hover:underline">
-						khabank
+						{userID}
 					</Link>
 					<div className="relative">
 						<p
@@ -239,13 +240,7 @@ function Video() {
 									? 'w-full'
 									: 'whitespace-nowrap overflow-hidden overflow-ellipsis w-[90%]'
 							}`}>
-							Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-							eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-							enim ad minim veniam, quis nostrud exercitation ullamco laboris
-							nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-							reprehenderit in voluptate velit esse cillum dolore eu fugiat
-							nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-							sunt in culpa qui officia deserunt mollit anim id est laborum.
+							{title}
 						</p>
 						<span
 							aria-disabled
@@ -266,7 +261,7 @@ function Video() {
 					<input
 						type="range"
 						min={0}
-						max={duration}
+						max={durationVideo}
 						value={currentTime}
 						onChange={(e) => {
 							handleDurationChange(e);
@@ -275,15 +270,15 @@ function Video() {
 						className="w-full duration rounded-b-2xl hover:cursor-pointer"
 						style={{
 							background: `linear-gradient(to right, #FE2C55 ${
-								(currentTime / duration) * 100
-							}%, #ffffffe6 ${(currentTime / duration) * 100}%)`,
+								(currentTime / durationVideo) * 100
+							}%, #ffffffe6 ${(currentTime / durationVideo) * 100}%)`,
 						}}
 					/>
 				</div>
 			</div>
-			<SideVideo/>
+			<SideVideo likeQuantity={likeQuantity} commentQuantity={commentQuantity} />
 		</div>
 	);
-}
+})
 
 export default Video;
