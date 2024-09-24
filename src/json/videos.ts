@@ -6,7 +6,7 @@ export const videos: VideoProps[] = [
 		userID: 'user_01',
 		title:
 			'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat. Duis aute irure dolor inreprehenderit in voluptate velit esse cillum dolore eu fugiatnulla pariatur. Excepteur sint occaecat cupidatat non proident,sunt in culpa qui officia deserunt mollit anim id est laborum.',
-		videoUrl: 'src/video/khabank.mp4',
+		videoUrl: 'src/public/video/domixi.mp4',
 		duration: 120,
 		viewQuantity: 1000,
 		commentQuantity: 100,
@@ -18,7 +18,7 @@ export const videos: VideoProps[] = [
 		userID: 'user_02',
 		title:
 			'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat. Duis aute irure dolor inreprehenderit in voluptate velit esse cillum dolore eu fugiatnulla pariatur. Excepteur sint occaecat cupidatat non proident,sunt in culpa qui officia deserunt mollit anim id est laborum.',
-		videoUrl: 'src/video/domixi.mp4',
+		videoUrl: 'src/public/video/khabank.mp4',
 		duration: 120,
 		viewQuantity: 1000,
 		commentQuantity: 100,
