@@ -103,14 +103,14 @@ export default function SideVideo({likeQuantity,commentQuantity}: SideVideoProps
 						className={`${save ? 'text-[#FACE16]' : 'text-[#E9E9E9]'}`}
 					/>
 				</span>
-				<p className="font-semibold mt-1">1234</p>
+				<p className="font-semibold mt-1 text-sm">1000</p>
 			</div>
 
 			<div className="flex flex-col items-center">
 				<span className="w-14 h-[56px] bg-[#ffffff1f] rounded-full flex items-center justify-center hover:cursor-pointer text-[#E9E9E9]">
 					<FontAwesomeIcon icon={faShare} fontSize={23} />
 				</span>
-				<p className="font-semibold mt-1 text-sm">1234</p>
+				<p className="font-semibold mt-1 text-sm">1000</p>
 			</div>
 			<span className="w-14 h-[56px] bg-[#ffffff1f] rounded-full flex items-center justify-center hover:cursor-pointer text-[#E9E9E9]">
 				<FontAwesomeIcon icon={faEllipsis} fontSize={23} />
