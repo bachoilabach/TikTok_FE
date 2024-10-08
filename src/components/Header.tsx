@@ -85,7 +85,7 @@ function Header() {
 
 			<div className="flex items-center w-[284px] gap-7">
 				<Link
-					to="/"
+					to="/upload"
 					className="flex  text-white items-center bg-[#ffffff1f] px-4 py-[5px] rounded hover:bg-[#ffffff0a] mr-4 ml-[-27px]">
 					<svg
 						width="20px"
