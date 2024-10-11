@@ -1,5 +1,6 @@
 import {
 	Avatar,
+	Button,
 	Menu,
 	MenuHandler,
 	MenuItem,
@@ -12,10 +13,14 @@ import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as Icons from '@fortawesome/free-solid-svg-icons';
 import { useState } from 'react';
+import LoginModal from './LoginModal';
 
 function Header() {
+	const login = false;
 	const [openMenu, setOpenMenu] = useState(false);
 	const [valueInputSearch, setValueValueInputSearch] = useState<string>('');
+	const [open, setOpen] = useState<boolean>(false);
+	const handleOpen = () => setOpen(!open);
 
 	type btn = {
 		icon?: Icons.IconDefinition;
@@ -54,6 +59,8 @@ function Header() {
 		setValueValueInputSearch(e.target.value);
 	};
 
+
+
 	return (
 		<div className="bg-[#121212] w-full h-16 flex items-center px-5 justify-between">
 			<div className="w-[300px] hover:cursor-pointer">
@@ -83,113 +90,131 @@ function Header() {
 				</div>
 			</form>
 
-			<div className="flex items-center w-[284px] gap-7">
-				<Link
-					to="/upload"
-					className="flex  text-white items-center bg-[#ffffff1f] px-4 py-[5px] rounded hover:bg-[#ffffff0a] mr-4 ml-[-27px]">
-					<svg
-						width="20px"
-						data-e2e=""
-						height="20px"
-						viewBox="0 0 16 16"
-						fill="white"
-						xmlns="http://www.w3.org/2000/svg"
-						className="mr-1">
-						<path
-							fillRule="evenodd"
-							clipRule="evenodd"
-							d="M8 2.5C7.58579 2.5 7.25 2.83579 7.25 3.25V7.25H3.25C2.83579 7.25 2.5 7.58579 2.5 8C2.5 8.41421 2.83579 8.75 3.25 8.75H7.25V12.75C7.25 13.1642 7.58579 13.5 8 13.5C8.41421 13.5 8.75 13.1642 8.75 12.75V8.75H12.75C13.1642 8.75 13.5 8.41421 13.5 8C13.5 7.58579 13.1642 7.25 12.75 7.25H8.75V3.25C8.75 2.83579 8.41421 2.5 8 2.5Z"></path>
-					</svg>
-					<p className="text-xl font-semibold">Upload</p>
-				</Link>
+			{login ? (
+				<>
+					<div className="flex items-center w-[284px] gap-7">
+						<Link
+							to="/upload"
+							className="flex  text-white items-center bg-[#ffffff1f] px-4 py-[5px] rounded hover:bg-[#ffffff0a] mr-4 ml-[-27px]">
+							<svg
+								width="20px"
+								data-e2e=""
+								height="20px"
+								viewBox="0 0 16 16"
+								fill="white"
+								xmlns="http://www.w3.org/2000/svg"
+								className="mr-1">
+								<path
+									fillRule="evenodd"
+									clipRule="evenodd"
+									d="M8 2.5C7.58579 2.5 7.25 2.83579 7.25 3.25V7.25H3.25C2.83579 7.25 2.5 7.58579 2.5 8C2.5 8.41421 2.83579 8.75 3.25 8.75H7.25V12.75C7.25 13.1642 7.58579 13.5 8 13.5C8.41421 13.5 8.75 13.1642 8.75 12.75V8.75H12.75C13.1642 8.75 13.5 8.41421 13.5 8C13.5 7.58579 13.1642 7.25 12.75 7.25H8.75V3.25C8.75 2.83579 8.41421 2.5 8 2.5Z"></path>
+							</svg>
+							<p className="text-xl font-semibold">Upload</p>
+						</Link>
 
-				<Link to={''}>
-					<Tooltip
-						content="Messages"
-						className="bg-[#545454eb]"
-						placement="bottom-start"
-						animate={{
-							mount: { scale: 1.3, x: -30, y: 20 },
-							unmount: { scale: 0, y: 25 },
-						}}>
-						<FontAwesomeIcon
-							icon={Icons.faPaperPlane}
-							color="white"
-							fontSize={25}
-						/>
-					</Tooltip>
-				</Link>
+						<Link to={''}>
+							<Tooltip
+								content="Messages"
+								className="bg-[#545454eb]"
+								placement="bottom-start"
+								animate={{
+									mount: { scale: 1.3, x: -30, y: 20 },
+									unmount: { scale: 0, y: 25 },
+								}}>
+								<FontAwesomeIcon
+									icon={Icons.faPaperPlane}
+									color="white"
+									fontSize={25}
+								/>
+							</Tooltip>
+						</Link>
 
-				<Link to={'/'}>
-					<Tooltip
-						content="Inbox"
-						placement="bottom-start"
-						className="bg-[#545454eb]"
-						animate={{
-							mount: { scale: 1.3, x: -15, y: 20 },
-							unmount: { scale: 0, y: 25 },
-						}}>
-						<FontAwesomeIcon
-							icon={Icons.faMessage}
-							color="white"
-							fontSize={25}
-						/>
-					</Tooltip>
-				</Link>
+						<Link to={'/'}>
+							<Tooltip
+								content="Inbox"
+								placement="bottom-start"
+								className="bg-[#545454eb]"
+								animate={{
+									mount: { scale: 1.3, x: -15, y: 20 },
+									unmount: { scale: 0, y: 25 },
+								}}>
+								<FontAwesomeIcon
+									icon={Icons.faMessage}
+									color="white"
+									fontSize={25}
+								/>
+							</Tooltip>
+						</Link>
 
-				<Menu
-					placement="bottom"
-					allowHover
-					open={openMenu}
-					handler={setOpenMenu}
-					animate={{
-						mount: { scale: 1.3, x: -35, y: 10 },
-						unmount: { scale: 0, y: 25 },
-					}}>
-					<MenuHandler>
-						<Avatar
-							src="https://danviet.mediacdn.vn/upload/2-2019/images/2019-04-02/Vi-sao-Kha-Banh-tro-thanh-hien-tuong-dinh-dam-tren-mang-xa-hoi-khabanh-1554192528-width660height597.jpg"
-							alt=""
-							size="sm"
-							variant="circular"
-							className="cursor-pointer"
-							placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}						
-						/>
-					</MenuHandler>
-					<MenuList
-						className="bg-[#333333] text-white "
+						<Menu
+							placement="bottom"
+							allowHover
+							open={openMenu}
+							handler={setOpenMenu}
+							animate={{
+								mount: { scale: 1.3, x: -35, y: 10 },
+								unmount: { scale: 0, y: 25 },
+							}}>
+							<MenuHandler>
+								<Avatar
+									src="https://danviet.mediacdn.vn/upload/2-2019/images/2019-04-02/Vi-sao-Kha-Banh-tro-thanh-hien-tuong-dinh-dam-tren-mang-xa-hoi-khabanh-1554192528-width660height597.jpg"
+									alt=""
+									size="sm"
+									variant="circular"
+									className="cursor-pointer"
+									placeholder={undefined}
+									onPointerEnterCapture={undefined}
+									onPointerLeaveCapture={undefined}
+								/>
+							</MenuHandler>
+							<MenuList
+								className="bg-[#333333] text-white "
+								placeholder={undefined}
+								onPointerEnterCapture={undefined}
+								onPointerLeaveCapture={undefined}>
+								<div className="-mx-3 -my-2">
+									{listBtn.map(({ name, icon }, index) => (
+										<div key={name}>
+											{index === listBtn.length - 1 ? (
+												<hr className="my-3 border-white" />
+											) : (
+												''
+											)}
+											<MenuItem
+												className="pl-2 flex items-center rounded-none hover:bg-[#444444] hover:text-white"
+												placeholder={undefined}
+												onPointerEnterCapture={undefined}
+												onPointerLeaveCapture={undefined}>
+												<FontAwesomeIcon icon={icon} className="w-[20px]" />
+												<Typography
+													variant="small"
+													className="font-medium ml-3"
+													placeholder={undefined}
+													onPointerEnterCapture={undefined}
+													onPointerLeaveCapture={undefined}>
+													{name}
+												</Typography>
+											</MenuItem>
+										</div>
+									))}
+								</div>
+							</MenuList>
+						</Menu>
+					</div>
+				</>
+			) : (
+				<div className='relative'>
+					<Button
+						onClick={handleOpen}
 						placeholder={undefined}
+						className="bg-[#ff3b5c] px-7 py-2 text-base right-0 "
 						onPointerEnterCapture={undefined}
 						onPointerLeaveCapture={undefined}>
-						<div className="-mx-3 -my-2">
-							{listBtn.map(({ name, icon }, index) => (
-								<div key={name}>
-									{index === listBtn.length - 1 ? (
-										<hr className="my-3 border-white" />
-									) : (
-										''
-									)}
-									<MenuItem
-										className="pl-2 flex items-center rounded-none hover:bg-[#444444] hover:text-white"
-										placeholder={undefined}
-										onPointerEnterCapture={undefined}
-										onPointerLeaveCapture={undefined}>
-										<FontAwesomeIcon icon={icon} className="w-[20px]" />
-										<Typography
-											variant="small"
-											className="font-medium ml-3"
-											placeholder={undefined}
-											onPointerEnterCapture={undefined}
-											onPointerLeaveCapture={undefined}>
-											{name}
-										</Typography>
-									</MenuItem>
-								</div>
-							))}
-						</div>
-					</MenuList>
-				</Menu>
-			</div>
+						Log In
+					</Button>
+					<LoginModal open={open} handleOpen={handleOpen}/>
+				</div>
+			)}
 		</div>
 	);
 }
