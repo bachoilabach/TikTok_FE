@@ -105,3 +105,22 @@ input[type='range'].slider::-moz-range-track {
 	-ms-overflow-style: none; /* IE and Edge */
 	scrollbar-width: none; /* Firefox */
 }
+
+
+/* styles.css */
+.scroll-login::-webkit-scrollbar {
+    width: 8px; /* Chiều rộng của thanh cuộn */
+}
+
+.scroll-login::-webkit-scrollbar-thumb {
+    background-color: #363737; /* Màu của thanh cuộn */
+    border-radius: 10px; /* Bo góc cho thanh cuộn */
+}
+
+.scroll-login::-webkit-scrollbar-track {
+    background: transparent; /* Màu nền của vùng cuộn */
+}
+
+.scroll-login::-webkit-scrollbar-button {
+    display: none; /* Ẩn nút mũi tên */
+}
