@@ -12,5 +12,8 @@ module.exports = withMT({
 			'screen-minus-59': 'calc(100vh - 59px)',
 		},
 	},
-	plugins: [require('tailwind-scrollbar')({ nocompatible: true }),],
+	plugins: [
+		require('tailwind-scrollbar')({ nocompatible: true }),
+		require('tailwindcss-animated'),
+	],
 });
