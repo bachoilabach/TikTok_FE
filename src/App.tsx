@@ -3,6 +3,8 @@ import MainLayout from './layout/MainLayout';
 import ForYou from './pages/ForYou';
 import UploadLayout from './layout/UploadLayout';
 import UploadPage from './pages/UploadPage';
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function App() {
 	return (
@@ -17,6 +19,7 @@ export default function App() {
 					</Route>
 				</Routes>
 			</BrowserRouter>
+			<ToastContainer stacked={true}  theme="dark" position="bottom-left"/>
 		</>
 	);
 }
