@@ -1,8 +1,9 @@
 import axios from 'axios';
 
+export const baseURL = 'http://localhost:3000'
 // Tạo instance của axios với cấu hình cơ bản
 const axiosInstance = axios.create({
-	baseURL: 'http://localhost:3000', // URL gốc của API
+	baseURL: baseURL, // URL gốc của API
 	timeout: 10000, // Thời gian chờ (tính bằng ms)
 	headers: {
 		'Content-Type': 'application/json',
@@ -13,10 +14,21 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
 	(config) => {
 		// Thêm token vào header nếu có
-		const token = localStorage.getItem('token'); // Giả sử bạn lưu token ở localStorage
-		if (token) {
-			config.headers['Authorization'] = `Bearer ${token}`;
+		const userId = sessionStorage.getItem('x-client-id')
+		if(userId){
+			config.headers['x-client-id'] = `${userId}`
 		}
+
+		const accessToken = localStorage.getItem('access-token');
+		if (accessToken) {
+			config.headers['authorization'] = `${accessToken}`;
+		}
+
+		const refreshToken = localStorage.getItem('refresh-token')
+		if(refreshToken){
+			config.headers['refresh-token'] = `${refreshToken}`
+		}
+
 		return config;
 	},
 	(error) => {
