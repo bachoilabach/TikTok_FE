@@ -7,6 +7,7 @@ interface User {
 	fullname: string;
 	email: string;
 	phone: string;
+	photoProfile: string;
 	// Thêm các thuộc tính khác nếu cần
 }
 
@@ -26,7 +27,6 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
 	// Hàm đăng nhập, lưu thông tin người dùng vào state
 	const login = (userData: User) => {
-		console.log(userData)
 		setUser(userData);
 		// Bạn có thể lưu userData vào localStorage/sessionStorage nếu cần
 	};
@@ -34,7 +34,8 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 	// Hàm đăng xuất, xóa thông tin người dùng khỏi state
 	const logout = () => {
 		setUser(null);
-		// Xóa dữ liệu từ localStorage/sessionStorage nếu cần
+		localStorage.clear()
+		sessionStorage.clear()
 	};
 
 	return (
