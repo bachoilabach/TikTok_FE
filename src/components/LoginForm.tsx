@@ -1,36 +1,56 @@
-import { useState } from "react";
-import { useUser } from "../context/UserContext";
-import { handleLogin } from "../api/user";
+import { useState } from 'react';
+import { useUser } from '../context/UserContext';
+import { handleLogin } from '../api/user';
+import { toast } from 'react-toastify';
+import axios from 'axios';
 
 export default function LoginForm() {
-    const [username, setUsername] = useState<string>(''); 
+	const [username, setUsername] = useState<string>('');
 	const [password, setPassword] = useState<string>('');
 	const [showPassword, setShowPassword] = useState<boolean>(false);
-	const {login} = useUser()
 
-    const togglePasswordVisibility = () => {
-		setShowPassword(!showPassword); 
+	const { login } = useUser();
+
+	const togglePasswordVisibility = () => {
+		setShowPassword(!showPassword);
 	};
 
 	const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setUsername(e.target.value); 
+		setUsername(e.target.value);
 	};
 
 	const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setPassword(e.target.value); 
+		setPassword(e.target.value);
 	};
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		const response = await handleLogin(username,password);
-		const user = response.metadata.user;
-		login(user)
+
+		try {
+			const response = await handleLogin(username, password);
+			const user = response.metadata.user;
+			login(user);
+			toast.success('Log in successfully')
+		} catch (error) {
+			if (axios.isAxiosError(error) && error.response) {
+				const status = error.response.status;
+				console.error('Login failed with status:', status);
+				if (status === 400) {
+					toast.error(error.response.data.message + '. You need to sign up');
+				}
+				if (status === 401) {
+					toast.error('Invalid username or password');
+				}
+			} else {
+				
+				console.error('An unexpected error occurred:', error);
+			}
+		}
 	};
-    
-    const isFormValid = username.length > 0 && password.length > 0;
-	
-    return (
-		
+
+	const isFormValid = username.length > 0 && password.length > 0;
+
+	return (
 		<form className="w-3/4 flex flex-col min-h-[489px]" onSubmit={handleSubmit}>
 			<label className="text-[#EAEAEA] text-xl mb-2" htmlFor="username">
 				Email or username
@@ -46,14 +66,14 @@ export default function LoginForm() {
 
 			<div className="relative mb-3">
 				<input
-					type={showPassword ? 'text' : 'password'} 
+					type={showPassword ? 'text' : 'password'}
 					placeholder="Password"
 					value={password}
 					onChange={handlePasswordChange}
 					className="bg-[#363737] px-3 py-3 rounded-sm text-[#EAEAEA] w-full focus:outline-none"
 				/>
 				<span
-					onClick={togglePasswordVisibility} 
+					onClick={togglePasswordVisibility}
 					className="absolute inset-y-0 right-3 flex items-center cursor-pointer">
 					{showPassword ? (
 						<svg
@@ -82,12 +102,13 @@ export default function LoginForm() {
 			<p className="text-[#EAEAEA] mb-4 text-sm">Forgot password?</p>
 			<button
 				type="submit"
-				className={` text-white py-3 px-4 rounded-md  transition duration-300 font-semibold ${
+				className={`text-white py-3 px-4 rounded-md transition duration-300 font-semibold flex items-center justify-center ${
 					isFormValid
 						? 'bg-[#ff3b5c] hover:bg-[#e0354f]'
 						: 'opacity-50 cursor-not-allowed bg-[#363737]'
 				}`}
-				disabled={!isFormValid}>
+				disabled={!isFormValid} // Disable khi đang loading
+			>
 				Log in
 			</button>
 		</form>

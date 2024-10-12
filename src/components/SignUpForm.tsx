@@ -1,39 +1,65 @@
-import { useState } from "react";
+import axios from 'axios';
+import { useState } from 'react';
+import { handleSignUpApi } from '../api/user';
+import { toast } from 'react-toastify';
 
 export default function SignUpForm() {
-    const [username, setUsername] = useState<string>(''); 
-    const [email, setEmail] = useState<string>(''); 
+	const [username, setUsername] = useState<string>('');
+	const [email, setEmail] = useState<string>('');
 	const [password, setPassword] = useState<string>('');
+	const [phoneNumber, setPhonrNumber] = useState<string>('');
 	const [showPassword, setShowPassword] = useState<boolean>(false);
-	const isFormValid = username.length > 0 && password.length > 0 && email.length > 0;
+	const isFormValid =
+		username.length > 0 && password.length > 0 && email.length > 0;
 
-    const togglePasswordVisibility = () => {
-		setShowPassword(!showPassword); 
+	const togglePasswordVisibility = () => {
+		setShowPassword(!showPassword);
 	};
 
-    const handleChangeEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setEmail(e.target.value); 
+	const handleChangeEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setEmail(e.target.value);
 	};
 
 	const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setUsername(e.target.value); 
+		setUsername(e.target.value);
 	};
 
 	const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setPassword(e.target.value); 
+		setPassword(e.target.value);
 	};
 
-	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+	const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setPhonrNumber(e.target.value);
+	};
+
+	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		
-		console.log('Username:', username);
-		console.log('Password:', password);
+
+		try {
+			const response = await handleSignUpApi(
+				email,
+				username,
+				password,
+				phoneNumber
+			);
+			const user = response.metadata.user;
+			toast.success('Sign up successfully! Please user manually moves to login form');
+		} catch (error) {
+			if (axios.isAxiosError(error) && error.response) {
+				const status = error.response.status;
+				console.error('Login failed with status:', status);
+				if (status === 400) {
+					toast.error(error.response.data.message);
+				}
+			} else {
+				console.error('An unexpected error occurred:', error);
+			}
+		}
 	};
 	return (
-		
-		<form className="w-3/4 flex flex-col min-h-[450px]" onSubmit={handleSubmit}>
+		<form className="w-3/4 flex flex-col min-h-[430px]" onSubmit={handleSubmit}>
 			<label className="text-[#EAEAEA] text-xl mb-2" htmlFor="email">
-				Email 
+				Email
 			</label>
 			<input
 				type="email"
@@ -43,7 +69,7 @@ export default function SignUpForm() {
 				onChange={handleChangeEmail}
 				className="bg-[#363737] px-3 py-3 rounded-sm text-[#EAEAEA] mb-3 focus:outline-none"
 			/>
-            <input
+			<input
 				type="text"
 				placeholder="UserName"
 				id="username"
@@ -51,17 +77,25 @@ export default function SignUpForm() {
 				onChange={handleUsernameChange}
 				className="bg-[#363737] px-3 py-3 rounded-sm text-[#EAEAEA] mb-3 focus:outline-none"
 			/>
+			<input
+				type="tel"
+				placeholder="Phone"
+				id="phone"
+				value={phoneNumber}
+				onChange={handlePhoneNumberChange}
+				className="bg-[#363737] px-3 py-3 rounded-sm text-[#EAEAEA] mb-3 focus:outline-none"
+			/>
 
 			<div className="relative mb-3">
 				<input
-					type={showPassword ? 'text' : 'password'} 
+					type={showPassword ? 'text' : 'password'}
 					placeholder="Password"
 					value={password}
 					onChange={handlePasswordChange}
 					className="bg-[#363737] px-3 py-3 rounded-sm text-[#EAEAEA] w-full focus:outline-none"
 				/>
 				<span
-					onClick={togglePasswordVisibility} 
+					onClick={togglePasswordVisibility}
 					className="absolute inset-y-0 right-3 flex items-center cursor-pointer">
 					{showPassword ? (
 						<svg
@@ -87,7 +121,6 @@ export default function SignUpForm() {
 				</span>
 			</div>
 
-			<p className="text-[#EAEAEA] mb-4 text-sm">Forgot password?</p>
 			<button
 				type="submit"
 				className={` text-white py-3 px-4 rounded-md  transition duration-300 font-semibold ${
