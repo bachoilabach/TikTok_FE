@@ -6,8 +6,15 @@ const handleLogin = async (username: string, password: string) => {
 			username,
 			password,
 		});
-		// Lưu token vào localStorage sau khi đăng nhập thành công
-		localStorage.setItem('token', response.data.token);
+		const { accessToken, refreshToken } = response.data.metadata.tokens;
+		console.log(response.data.metadata.user._id);
+		const userId = response.data.metadata.user._id;
+
+		// Lưu accessToken và refreshToken vào localStorage
+		sessionStorage.setItem('x-client-id', userId);
+		localStorage.setItem('access-token', accessToken);
+		localStorage.setItem('refresh-token', refreshToken);
+
 		return response.data;
 	} catch (error) {
 		console.error('Login error:', error);
@@ -15,4 +22,29 @@ const handleLogin = async (username: string, password: string) => {
 	}
 };
 
-export { handleLogin };
+const handleLogoutApi = async () => {
+	await axiosInstance.post('/api/user/logout');
+};
+
+const handleSignUpApi = async (
+	email: string,
+	username: string,
+	password: string,
+	phone: string
+) => {
+	try {
+		const response = await axiosInstance.post('/api/user/signup', {
+			email,
+			username,
+			password,
+			phone,
+		});
+
+		return response.data
+	} catch (err) {
+		console.log('Sign up error: ', err);
+		throw err
+	}
+};
+
+export { handleLogin, handleLogoutApi, handleSignUpApi };
