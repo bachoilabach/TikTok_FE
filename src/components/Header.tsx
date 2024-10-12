@@ -12,11 +12,14 @@ import logo from '../assets/Logo.png';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as Icons from '@fortawesome/free-solid-svg-icons';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import LoginModal from './LoginModal';
+import { useUser } from '../context/UserContext';
+import { toast } from 'react-toastify';
+import { handleLogoutApi } from '../api/user';
 
 function Header() {
-	const login = false;
+	const { user, logout } = useUser();
 	const [openMenu, setOpenMenu] = useState(false);
 	const [valueInputSearch, setValueValueInputSearch] = useState<string>('');
 	const [open, setOpen] = useState<boolean>(false);
@@ -59,7 +62,16 @@ function Header() {
 		setValueValueInputSearch(e.target.value);
 	};
 
+	const handleLogout = async() => {
+		console.log(1234567)
+		await handleLogoutApi()
+		logout();
+		toast.success('Log out succesfully')
+	};
 
+	useEffect(()=>{
+
+	},[user])
 
 	return (
 		<div className="bg-[#121212] w-full h-16 flex items-center px-5 justify-between">
@@ -90,7 +102,7 @@ function Header() {
 				</div>
 			</form>
 
-			{login ? (
+			{user ? (
 				<>
 					<div className="flex items-center w-[284px] gap-7">
 						<Link
@@ -157,7 +169,7 @@ function Header() {
 							}}>
 							<MenuHandler>
 								<Avatar
-									src="https://danviet.mediacdn.vn/upload/2-2019/images/2019-04-02/Vi-sao-Kha-Banh-tro-thanh-hien-tuong-dinh-dam-tren-mang-xa-hoi-khabanh-1554192528-width660height597.jpg"
+									src={user.photoProfile}
 									alt=""
 									size="sm"
 									variant="circular"
@@ -178,10 +190,11 @@ function Header() {
 											{index === listBtn.length - 1 ? (
 												<hr className="my-3 border-white" />
 											) : (
-												''
+												null
 											)}
 											<MenuItem
 												className="pl-2 flex items-center rounded-none hover:bg-[#444444] hover:text-white"
+												onClick={name === 'Log out' ? handleLogout : undefined}
 												placeholder={undefined}
 												onPointerEnterCapture={undefined}
 												onPointerLeaveCapture={undefined}>
@@ -203,7 +216,7 @@ function Header() {
 					</div>
 				</>
 			) : (
-				<div className='relative'>
+				<div className="relative">
 					<Button
 						onClick={handleOpen}
 						placeholder={undefined}
@@ -212,7 +225,7 @@ function Header() {
 						onPointerLeaveCapture={undefined}>
 						Log In
 					</Button>
-					<LoginModal open={open} handleOpen={handleOpen}/>
+					<LoginModal open={open} handleOpen={handleOpen} />
 				</div>
 			)}
 		</div>

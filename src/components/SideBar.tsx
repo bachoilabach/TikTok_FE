@@ -3,13 +3,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Avatar, Typography } from '@material-tailwind/react';
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useUser } from '../context/UserContext';
 
 function SideBar() {
 	// * Change color button when user click
 	const [selectedPath, setSelectedPath] = useState<string>('/');
 	const location = useLocation();
 	const currentPath = location.pathname;
-
+	const {user} = useUser()
 	const handleClick = (path: string) => {
 		setSelectedPath(path);
 		console.log(selectedPath);
@@ -52,7 +53,7 @@ function SideBar() {
 			name: 'Profile',
 			path: '/profile',
 			avatar:
-				'https://danviet.mediacdn.vn/upload/2-2019/images/2019-04-02/Vi-sao-Kha-Banh-tro-thanh-hien-tuong-dinh-dam-tren-mang-xa-hoi-khabanh-1554192528-width660height597.jpg',
+				user?.photoProfile,
 		},
 	];
 
