@@ -10,7 +10,7 @@ function SideBar() {
 	const [selectedPath, setSelectedPath] = useState<string>('/');
 	const location = useLocation();
 	const currentPath = location.pathname;
-	const {user} = useUser()
+	const { user } = useUser();
 	const handleClick = (path: string) => {
 		setSelectedPath(path);
 		console.log(selectedPath);
@@ -52,15 +52,14 @@ function SideBar() {
 		{
 			name: 'Profile',
 			path: '/profile',
-			avatar:
-				user?.photoProfile,
+			avatar: user?.photoProfile,
 		},
 	];
 
 	// * Follower
 	type following = {
 		avatar?: string;
-		userID: string;
+		fullName: string;
 		userName: string;
 	};
 
@@ -70,12 +69,12 @@ function SideBar() {
 		setListFollowing([
 			{
 				avatar: '',
-				userID: 'khabanh',
+				fullName: 'khabanh',
 				userName: 'Khá bảnh',
 			},
 			{
 				avatar: 'https://nguoinoitieng.tv/images/nnt/100/0/bej1.jpg',
-				userID: 'phamtuan',
+				fullName: 'phamtuan',
 				userName: 'Phạm Tuấn',
 			},
 		]);
@@ -97,7 +96,10 @@ function SideBar() {
 							<FontAwesomeIcon icon={ele.icon} className="text-2xl w-7" />
 						) : (
 							<Avatar
-								src={ele.avatar}
+								src={
+									ele?.avatar ||
+									'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ2FoNFztYrjisKytpNypxcpYf_tQqGme8q5Q&s'
+								}
 								alt={ele.name}
 								// size="sm"
 								variant="circular"
@@ -113,56 +115,65 @@ function SideBar() {
 				<span className="w-[90%] h-[1px] bg-[#ffffff1f]"></span>
 
 				{/* List follower */}
-				<div className="">
-					<Typography
-						variant="h6"
-						placeholder={undefined}
-						onPointerEnterCapture={undefined}
-						onPointerLeaveCapture={undefined}>
-						Following accounts
-					</Typography>
-					{listFollowing.map((following) => (
-						<Link
-							key={following.userID}
-							className="mt-2 p-2 flex items-center rounded hover:bg-[#ffffff1f]"
-							to={''}>
-							<div className="h-8">
-								<Avatar
-									src={
-										following.avatar ||
-										'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ2FoNFztYrjisKytpNypxcpYf_tQqGme8q5Q&s'
-									}
-									variant="circular"
-									alt=""
-									style={{ width: '35px', height: '35px' }}
-									placeholder={undefined}
-									onPointerEnterCapture={undefined}
-									onPointerLeaveCapture={undefined}
-								/>
-							</div>
+				{user ? (
+					<div className="">
+						<Typography
+							variant="h6"
+							placeholder={undefined}
+							onPointerEnterCapture={undefined}
+							onPointerLeaveCapture={undefined}>
+							Following accounts
+						</Typography>
+						<div>
+							{listFollowing.map((following) => (
+								<Link
+									key={following.fullName}
+									className="mt-2 p-2 flex items-center rounded hover:bg-[#ffffff1f]"
+									to={''}>
+									<div className="h-8">
+										<Avatar
+											src={
+												following.avatar ||
+												'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ2FoNFztYrjisKytpNypxcpYf_tQqGme8q5Q&s'
+											}
+											variant="circular"
+											alt=""
+											style={{ width: '35px', height: '35px' }}
+											placeholder={undefined}
+											onPointerEnterCapture={undefined}
+											onPointerLeaveCapture={undefined}
+										/>
+									</div>
 
-							<div className="ml-3">
-								<Typography
-									variant="h5"
-									className=""
-									placeholder={undefined}
-									onPointerEnterCapture={undefined}
-									onPointerLeaveCapture={undefined}>
-									{following.userName}
-								</Typography>
-								<Typography
-									variant="small"
-									placeholder={undefined}
-									onPointerEnterCapture={undefined}
-									onPointerLeaveCapture={undefined}>
-									{following.userID}
-								</Typography>
-							</div>
-						</Link>
-					))}
-					{listFollowing.length > 10 ? <div>See more</div> : <div></div>}
-				</div>
+									<div className="ml-3">
+										<Typography
+											variant="h5"
+											className=""
+											placeholder={undefined}
+											onPointerEnterCapture={undefined}
+											onPointerLeaveCapture={undefined}>
+											{following.fullName}
+										</Typography>
+										<Typography
+											variant="small"
+											placeholder={undefined}
+											onPointerEnterCapture={undefined}
+											onPointerLeaveCapture={undefined}>
+											{following.userName}
+										</Typography>
+									</div>
+								</Link>
+							))}
+							{listFollowing.length > 10 ? <div>See more</div> : <div></div>}
+						</div>
+					</div>
+				) : (
+					<div className='text-xl text-[#878787]'>
+						Log in to follow creators, like videos, and view comments.
+					</div>
+				)}
 
+				
 				<span className="w-[90%] h-[1px] bg-[#ffffff1f]"></span>
 
 				{/* footer side bar */}
