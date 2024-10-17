@@ -1,4 +1,4 @@
-import { createContext, useState, useContext, ReactNode } from 'react';
+import { createContext, useState, useContext, ReactNode, useEffect } from 'react';
 
 // Định nghĩa kiểu dữ liệu cho người dùng
 interface User {
@@ -14,6 +14,7 @@ interface User {
 // Định nghĩa kiểu dữ liệu cho Context
 interface UserContextProps {
 	user: User | null;
+	isLoading: boolean
 	login: (userData: User) => void;
 	logout: () => void;
 }
@@ -23,29 +24,38 @@ const UserContext = createContext<UserContextProps | undefined>(undefined);
 
 // Provider component cho phép con của nó truy cập vào user data
 export const UserProvider = ({ children }: { children: ReactNode }) => {
+	const [isLoading,setIsLoading] = useState<boolean>(true)
+	useEffect(()=>{
+		const storageUser = localStorage.getItem('user');
+		if(storageUser){
+			setUser(JSON.parse(storageUser))
+		}
+		setIsLoading(false)
+	},[])
 	const [user, setUser] = useState<User | null>(null);
+
 
 	// Hàm đăng nhập, lưu thông tin người dùng vào state
 	const login = (userData: User) => {
 		setUser(userData);
-		// Bạn có thể lưu userData vào localStorage/sessionStorage nếu cần
+		localStorage.setItem('user', JSON.stringify(userData));
 	};
 
 	// Hàm đăng xuất, xóa thông tin người dùng khỏi state
 	const logout = () => {
 		setUser(null);
 		localStorage.clear()
-		sessionStorage.clear()
 	};
 
 	return (
-		<UserContext.Provider value={{ user, login, logout }}>
+		<UserContext.Provider value={{ user,isLoading, login, logout }}>
 			{children}
 		</UserContext.Provider>
 	);
 };
 
 // Custom hook để sử dụng UserContext dễ dàng hơn
+// eslint-disable-next-line react-refresh/only-export-components
 export const useUser = (): UserContextProps => {
 	const context = useContext(UserContext);
 	if (context === undefined) {

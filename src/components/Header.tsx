@@ -19,7 +19,7 @@ import { toast } from 'react-toastify';
 import { handleLogoutApi } from '../api/user';
 
 function Header() {
-	const { user, logout } = useUser();
+	const { user, isLoading, logout } = useUser();
 	const [openMenu, setOpenMenu] = useState(false);
 	const [valueInputSearch, setValueValueInputSearch] = useState<string>('');
 	const [open, setOpen] = useState<boolean>(false);
@@ -62,19 +62,18 @@ function Header() {
 		setValueValueInputSearch(e.target.value);
 	};
 
-	const handleLogout = async() => {
-		console.log(1234567)
-		await handleLogoutApi()
+	const handleLogout = async () => {
+		await handleLogoutApi();
 		logout();
-		toast.success('Log out succesfully')
+		toast.success('Log out succesfully');
 	};
 
-	useEffect(()=>{
-
-	},[user])
+	useEffect(() => {
+		console.log(isLoading);
+	}, [user]);
 
 	return (
-		<div className="bg-[#121212] w-full h-16 flex items-center px-5 justify-between">
+		<div className="bg-[#121212] w-full flex items-center px-5 justify-between">
 			<div className="w-[300px] hover:cursor-pointer">
 				<img src={logo} width={140} alt="Tik Ok" />
 			</div>
@@ -102,7 +101,9 @@ function Header() {
 				</div>
 			</form>
 
-			{user ? (
+			{isLoading ? (
+				<div className="w-9 min-h-9 bg-[#ffffff1f] animate-pulse rounded-full"></div>
+			) : user ? (
 				<>
 					<div className="flex items-center w-[284px] gap-7">
 						<Link
@@ -169,7 +170,7 @@ function Header() {
 							}}>
 							<MenuHandler>
 								<Avatar
-									src={user.photoProfile}
+									src={user?.photoProfile}
 									alt=""
 									size="sm"
 									variant="circular"
@@ -180,7 +181,7 @@ function Header() {
 								/>
 							</MenuHandler>
 							<MenuList
-								className="bg-[#333333] text-white "
+								className="bg-[#333333] text-white"
 								placeholder={undefined}
 								onPointerEnterCapture={undefined}
 								onPointerLeaveCapture={undefined}>
@@ -189,9 +190,7 @@ function Header() {
 										<div key={name}>
 											{index === listBtn.length - 1 ? (
 												<hr className="my-3 border-white" />
-											) : (
-												null
-											)}
+											) : null}
 											<MenuItem
 												className="pl-2 flex items-center rounded-none hover:bg-[#444444] hover:text-white"
 												onClick={name === 'Log out' ? handleLogout : undefined}
@@ -217,14 +216,11 @@ function Header() {
 				</>
 			) : (
 				<div className="relative">
-					<Button
+					<button
 						onClick={handleOpen}
-						placeholder={undefined}
-						className="bg-[#ff3b5c] px-7 py-2 text-base right-0 "
-						onPointerEnterCapture={undefined}
-						onPointerLeaveCapture={undefined}>
+						className="bg-[#ff3b5c] px-7 py-2 text-base right-0 ">
 						Log In
-					</Button>
+					</button>
 					<LoginModal open={open} handleOpen={handleOpen} />
 				</div>
 			)}
