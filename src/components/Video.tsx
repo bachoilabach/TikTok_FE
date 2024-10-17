@@ -1,7 +1,14 @@
 import { faPause, faPlayCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Tooltip } from '@material-tailwind/react';
-import { ChangeEvent, forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import {
+	ChangeEvent,
+	forwardRef,
+	useEffect,
+	useImperativeHandle,
+	useRef,
+	useState,
+} from 'react';
 import { Link } from 'react-router-dom';
 import SideVideo from './SideVideo';
 
@@ -11,16 +18,16 @@ export interface VideoProps {
 	title: string;
 	videoUrl: string;
 	duration: number;
-	viewQuantity: number;
-	commentQuantity: number;
-	likeQuantity: number;
+	view: number;
+	comments: number;
+	likes: number;
 	// allowComment: number;
 	// whoCanView: number;
 	// createdDate: Date;
 }
 
-const Video = forwardRef<HTMLVideoElement, VideoProps>( (props,ref) => {
-	const { videoID, userID, title, videoUrl, commentQuantity, likeQuantity } = props;
+const Video = forwardRef<HTMLVideoElement, VideoProps>((props, ref) => {
+	const { videoID, userID, title, videoUrl, comments, likes } = props;
 	// * State
 	const [play, setPlay] = useState<boolean>(true);
 	const [animate, setAnimate] = useState<boolean>(false);
@@ -28,14 +35,12 @@ const Video = forwardRef<HTMLVideoElement, VideoProps>( (props,ref) => {
 	const [previousVolumn, setPreviousVolumn] = useState<number>(80);
 	const [showVolumeControl, setShowVolumeControl] = useState<boolean>(false);
 	const [contentExpanded, setContentExpended] = useState<boolean>(false);
+	const [isOverflowing, setIsOverflowing] = useState(false);
+	const titleRef = useRef<HTMLParagraphElement>(null);
 	const [currentTime, setCurrentTime] = useState<number>(0);
 	const [durationVideo, setDurationVideo] = useState<number>(0);
 	const videoRef = useRef<HTMLVideoElement | null>(null);
 	useImperativeHandle(ref, () => videoRef.current as HTMLVideoElement);
-	const [videoDimensions, setVideoDimensions] = useState({
-		width: 0,
-		height: 0,
-	});
 
 	// * Play / Pause
 	const handleClickPlay = () => {
@@ -87,9 +92,6 @@ const Video = forwardRef<HTMLVideoElement, VideoProps>( (props,ref) => {
 	// * Video dimesion
 	const handleLoadedMetadata = () => {
 		if (videoRef.current) {
-			const width = videoRef.current.videoWidth;
-			const height = videoRef.current.videoHeight;
-			setVideoDimensions({ width, height });
 			setDurationVideo(videoRef.current.duration);
 		}
 	};
@@ -110,11 +112,17 @@ const Video = forwardRef<HTMLVideoElement, VideoProps>( (props,ref) => {
 	};
 
 	useEffect(() => {
-		console.log(videoRef.current)
-	}, []);
+		const titleElement = titleRef.current;
+		if (titleElement) {
+			// Kiểm tra xem title có bị tràn ra khỏi container hay không
+			setIsOverflowing(titleElement.scrollWidth > titleElement.clientWidth);
+		}
+	}, [title]);
 
 	return (
-		<div className="flex space-x-4 h-[100%] w-[100%] justify-center pl-28" key={videoID}>
+		<div
+			className="flex space-x-4 h-[100%] w-[100%] justify-center pl-28"
+			key={videoID}>
 			<div
 				className={`relative h-[100%] rounded-2xl hover:cursor-pointer group flex flex-col items-center`}
 				style={{ width: `${(625 + 365) / 2}px` }}
@@ -125,8 +133,7 @@ const Video = forwardRef<HTMLVideoElement, VideoProps>( (props,ref) => {
 					ref={videoRef}
 					onLoadedMetadata={handleLoadedMetadata}
 					onTimeUpdate={handleTimeUpdate}
-					className="absolute top-0 w-full h-[100%] object-fill rounded-2xl text-white z-0"
-					>
+					className="absolute top-0 w-full h-[100%] object-fill rounded-2xl text-white z-0">
 					<source src={videoUrl} type="video/mp4" />
 					Your browser does not support the video tag.
 				</video>
@@ -235,6 +242,7 @@ const Video = forwardRef<HTMLVideoElement, VideoProps>( (props,ref) => {
 					</Link>
 					<div className="relative">
 						<p
+							ref={titleRef}
 							className={`break-words  text-lg font-medium ${
 								contentExpanded
 									? 'w-full'
@@ -242,15 +250,17 @@ const Video = forwardRef<HTMLVideoElement, VideoProps>( (props,ref) => {
 							}`}>
 							{title}
 						</p>
-						<span
-							aria-disabled
-							onClick={(e) => {
-								handleTonggleExpand();
-								e.stopPropagation();
-							}}
-							className="absolute top-30 right-0 bottom-0 cursor-pointer text-xl font-semibold">
-							{contentExpanded ? 'less' : 'more'}
-						</span>
+						{isOverflowing && (
+							<span
+								aria-disabled
+								onClick={(e) => {
+									handleTonggleExpand();
+									e.stopPropagation();
+								}}
+								className="absolute top-30 right-0 bottom-0 cursor-pointer text-xl font-semibold">
+								{contentExpanded ? 'less' : 'more'}
+							</span>
+						)}
 					</div>
 				</div>
 
@@ -276,9 +286,9 @@ const Video = forwardRef<HTMLVideoElement, VideoProps>( (props,ref) => {
 					/>
 				</div>
 			</div>
-			<SideVideo likeQuantity={likeQuantity} commentQuantity={commentQuantity} />
+			<SideVideo likeQuantity={likes} commentQuantity={comments} />
 		</div>
 	);
-})
+});
 
 export default Video;
