@@ -1,9 +1,19 @@
 import { useEffect, useRef, useState } from 'react';
-import Video from '../components/Video';
-import { videos } from '../json/videos';
+import Video, { VideoProps } from '../components/Video';
+import { handleGetAllVideoApi } from '../api/video'
 
 function ForYou() {
 	const videoRefs = useRef<(HTMLVideoElement | null)[]>([]); // Để lưu trữ các tham chiếu video
+	const [listVideo,setListVideo] = useState<VideoProps[]>([])
+
+	const handleGetVideos = async() => {
+		const response = await handleGetAllVideoApi()
+		setListVideo(response.metadata)
+	}
+
+	useEffect(()=>{
+		handleGetVideos()
+	},[])
 
 	useEffect(() => {
 		const observer = new IntersectionObserver(
@@ -35,14 +45,14 @@ function ForYou() {
 				}
 			});
 		};
-	}, []);
+	}, [listVideo]);
 
 	return (
 		<div
 			className="w-full overflow-y-scroll snap-y snap-mandatory hide-scrollbar space-y-5"
 			style={{ scrollSnapType: 'y mandatory', height: 'calc(100vh - 91px)' }} // Tương thích cũ hơn
 		>
-			{videos.map((video, index) => (
+			{listVideo.map((video, index) => (
 				<div
 					key={video.videoID}
 					style={{ height: 'calc(100vh - 98px)' }} // Điều chỉnh theo chiều cao khung nhìn
@@ -56,9 +66,9 @@ function ForYou() {
 						title={video.title}
 						videoUrl={video.videoUrl}
 						duration={video.duration}
-						viewQuantity={video.viewQuantity}
-						commentQuantity={video.commentQuantity}
-						likeQuantity={video.likeQuantity}
+						view={video.view}
+						comments={video.comments}
+						likes={video.likes}
 					/>
 				</div>
 			))}
