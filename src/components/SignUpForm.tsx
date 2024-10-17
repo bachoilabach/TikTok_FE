@@ -36,14 +36,11 @@ export default function SignUpForm() {
 		e.preventDefault();
 
 		try {
-			const response = await handleSignUpApi(
-				email,
-				username,
-				password,
-				phoneNumber
+			await handleSignUpApi(email, username, password, phoneNumber);
+
+			toast.success(
+				'Sign up successfully! Please user manually moves to login form'
 			);
-			const user = response.metadata.user;
-			toast.success('Sign up successfully! Please user manually moves to login form');
 		} catch (error) {
 			if (axios.isAxiosError(error) && error.response) {
 				const status = error.response.status;
