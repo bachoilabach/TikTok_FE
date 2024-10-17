@@ -216,11 +216,14 @@ function Header() {
 				</>
 			) : (
 				<div className="relative">
-					<button
+					<Button
 						onClick={handleOpen}
-						className="bg-[#ff3b5c] px-7 py-2 text-base right-0 ">
+						className="bg-[#ff3b5c] px-7 py-2 text-base right-0 "
+						placeholder={undefined}
+						onPointerEnterCapture={undefined}
+						onPointerLeaveCapture={undefined}>
 						Log In
-					</button>
+					</Button>
 					<LoginModal open={open} handleOpen={handleOpen} />
 				</div>
 			)}
