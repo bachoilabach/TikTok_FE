@@ -11,7 +11,7 @@ const handleLogin = async (username: string, password: string) => {
 		const userId = response.data.metadata.user._id;
 
 		// Lưu accessToken và refreshToken vào localStorage
-		sessionStorage.setItem('x-client-id', userId);
+		localStorage.setItem('x-client-id', userId);
 		localStorage.setItem('access-token', accessToken);
 		localStorage.setItem('refresh-token', refreshToken);
 

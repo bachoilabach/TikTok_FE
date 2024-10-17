@@ -14,7 +14,7 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
 	(config) => {
 		// Thêm token vào header nếu có
-		const userId = sessionStorage.getItem('x-client-id')
+		const userId = localStorage.getItem('x-client-id')
 		if(userId){
 			config.headers['x-client-id'] = `${userId}`
 		}
