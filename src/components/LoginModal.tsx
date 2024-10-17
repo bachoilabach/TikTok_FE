@@ -61,10 +61,10 @@ export default function LoginModal({
 			className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
 			onClick={handleBackgroundClick}>
 			<div
-				className={`bg-[#252525] w-full max-w-screen-sm mx-auto p-6 rounded-lg shadow-lg relative transform transition-all duration-100 ${
+				className={`bg-[#252525] w-full max-w-screen-sm mx-auto p-6 rounded-lg shadow-lg relative transform transition-all duration-300 ${
 					open
 						? 'animate-jump-in animate-once animate-ease-linear animate-duration-200'
-						: 'scale-0 opacity-0'
+						: 'scale-50 opacity-0'
 				}`}>
 				<div className="w-full flex flex-row-reverse">
 					<button
