@@ -2,6 +2,9 @@ import { Radio, Switch } from '@material-tailwind/react';
 import { ChangeEvent, useEffect, useState } from 'react';
 import ActionButtons from './ActionButtons';
 import DemoScreen from './DemoScreen';
+import { handleUploadVideoToCloudApi } from '../api/video';
+import { socket } from '../utils/axios';
+import { toast } from 'react-toastify';
 
 interface UploadVideoProps {
 	file: File;
@@ -47,6 +50,8 @@ export default function UploadVideo({ file }: UploadVideoProps) {
 	const [valueDesripton, setValueDesription] = useState<string>('');
 	const [selectedOption, setSelectedOption] = useState('Everyone');
 	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+	const [uploadResponse, setUploadResponse] = useState(null);
+	const [uploadProgress, setUploadProgress] = useState<number>(0); // Giá trị ban đầu là 0
 
 	const handleSelect = (option: string) => {
 		setSelectedOption(option);
@@ -57,7 +62,20 @@ export default function UploadVideo({ file }: UploadVideoProps) {
 		setValueDesription(e.target.value);
 	};
 
+	const uploadVideoToCloud = async () => {
+		try {
+			const response = await handleUploadVideoToCloudApi(file);
+			setUploadResponse(response);
+		} catch (error) {
+			console.error('Upload failed:', error);
+			// Thông báo lỗi nếu cần
+		}
+	};
+
 	useEffect(() => {
+		// Kiểm tra nếu file tồn tại
+		if (!file) return;
+
 		// Lấy tên và dung lượng file
 		const fileName = file.name;
 		const fileSize = (file.size / (1024 * 1024)).toFixed(2); // Convert to MB
@@ -75,21 +93,43 @@ export default function UploadVideo({ file }: UploadVideoProps) {
 				size: parseFloat(fileSize),
 				duration: videoDuration,
 			});
-			URL.revokeObjectURL(objectURL); // Xóa object URL sau khi hoàn thành
+			URL.revokeObjectURL(objectURL);
+		};
+
+		uploadVideoToCloud();
+
+		if(uploadResponse){
+			toast.success('Upload Video to cloud success')
+		}
+
+		return () => {
+			URL.revokeObjectURL(objectURL);
 		};
 	}, [file]);
+
+	useEffect(() => {
+		socket.on('uploadProgress', (data) => {
+			console.log(`Progress: ${data.progress}%`);
+			setUploadProgress(data.progress);
+		});
+
+		// Cleanup listener khi component unmount
+		return () => {
+			socket.off('uploadProgress');
+		};
+	}, []);
 
 	return (
 		<div className="flex flex-col items-center w-full space-y-3 ">
 			{/* Information video */}
-			<div className="w-[70%] bg-white px-6 pt-6 pb-3 rounded-lg shadow-2xl border-b-4 border-[#00C39B]">
+			<div className="w-[70%] bg-white px-6 pt-6 pb-3 rounded-lg shadow-2xl relative z-10">
 				<div className="flex justify-between">
 					<p className="text-3xl">{videoInfo.name}</p>
 					<button
 						className="px-2 py-1 bg-[#0000000D] rounded-md hover:cursor-not-allowed text-lg text-[#A3A4A7] flex items-center"
 						disabled>
 						<svg
-							fill="currentColor"
+							fill="black"
 							viewBox="0 0 48 48"
 							xmlns="http://www.w3.org/2000/svg"
 							width="1em"
@@ -116,15 +156,46 @@ export default function UploadVideo({ file }: UploadVideoProps) {
 					</p>
 				</span>
 				<span className="flex justify-between items-center">
-					<div className="flex space-x-3">
-						<img
-							src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjUiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNSAyNCIgZmlsbD0ibm9uZSIKICB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogIDxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMTIuNSAyMS4xNjczQzE3LjU2MjYgMjEuMTY3MyAyMS42NjY3IDE3LjA2MzMgMjEuNjY2NyAxMi4wMDA3QzIxLjY2NjcgNi45MzgwNCAxNy41NjI2IDIuODMzOTggMTIuNSAyLjgzMzk4QzcuNDM3NCAyLjgzMzk4IDMuMzMzMzQgNi45MzgwNCAzLjMzMzM0IDEyLjAwMDdDMy4zMzMzNCAxNy4wNjMzIDcuNDM3NCAyMS4xNjczIDEyLjUgMjEuMTY3M1pNMTYuODMxNiA4LjM4OTIxTDE1Ljk0MjEgNy44MzAxOEMxNS42OTQxIDcuNjc5NDkgMTUuMzY4NSA3Ljc1MjQgMTUuMjE3OCA4LjAwMDMyTDExLjM4NzIgMTQuMTMwMkw5LjI2MjkgMTEuNzA0NUM5LjA2ODQ1IDExLjQ4NTcgOC43Mzc5IDExLjQ2MTQgOC41MjQwMSAxMS42NTFMNy43MjY3OSAxMi4zNDYyQzcuNTA4MDQgMTIuNTM1NyA3LjQ4MzczIDEyLjg3NiA3LjY3ODE3IDEzLjA4OTlMMTAuNzM1OCAxNi41ODVDMTAuOTU0NiAxNi44Mzc4IDExLjI3NTQgMTYuOTY5MSAxMS42MDYgMTYuOTM5OUMxMS45NDE0IDE2LjkxNTYgMTIuMjM3OSAxNi43MzA5IDEyLjQxNzggMTYuNDQ0MUwxNy4wMDE4IDkuMTE4MzdDMTcuMTUyNSA4Ljg3MDQ2IDE3LjA3OTYgOC41NDQ3NiAxNi44MzE2IDguMzg5MjFaIiBmaWxsPSIjMDBDMzlCIi8+Cjwvc3ZnPgo="
-							alt="Uploaded"
-						/>
-						<p className="text-[#00C39B] text-lg">Uploaded</p>
+					<div>
+						{uploadProgress < 100 ? (
+							<div className="flex items-center justify-center">
+								<svg
+									className="animate-spin -ml-1 mr-3 h-5 w-5 text-[#00C39B]"
+									xmlns="http://www.w3.org/2000/svg"
+									fill="none"
+									viewBox="0 0 24 24">
+									<circle
+										className="opacity-25"
+										cx="12"
+										cy="12"
+										r="10"
+										stroke="currentColor"
+										strokeWidth="4"></circle>
+									<path
+										className="opacity-75"
+										fill="currentColor"
+										d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+								</svg>
+								<p className="text-[#00C39B] text-lg ml-2">Uploading...</p>
+							</div>
+						) : (
+							<div className="flex space-x-3">
+								<img
+									src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjUiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNSAyNCIgZmlsbD0ibm9uZSIKICB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogIDxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMTIuNSAyMS4xNjczQzE3LjU2MjYgMjEuMTY3MyAyMS42NjY3IDE3LjA2MzMgMjEuNjY2NyAxMi4wMDA3QzIxLjY2NjcgNi45MzgwNCAxNy41NjI2IDIuODMzOTggMTIuNSAyLjgzMzk4QzcuNDM3NCAyLjgzMzk4IDMuMzMzMzQgNi45MzgwNCAzLjMzMzM0IDEyLjAwMDdDMy4zMzMzNCAxNy4wNjMzIDcuNDM3NCAyMS4xNjczIDEyLjUgMjEuMTY3M1pNMTYuODMxNiA4LjM4OTIxTDE1Ljk0MjEgNy44MzAxOEMxNS42OTQxIDcuNjc5NDkgMTUuMzY4NSA3Ljc1MjQgMTUuMjE3OCA4LjAwMDMyTDExLjM4NzIgMTQuMTMwMkw5LjI2MjkgMTEuNzA0NUM5LjA2ODQ1IDExLjQ4NTcgOC43Mzc5IDExLjQ2MTQgOC41MjQwMSAxMS42NTFMNy43MjY3OSAxMi4zNDYyQzcuNTA4MDQgMTIuNTM1NyA3LjQ4MzczIDEyLjg3NiA3LjY3ODE3IDEzLjA4OTlMMTAuNzM1OCAxNi41ODVDMTAuOTU0NiAxNi44Mzc4IDExLjI3NTQgMTYuOTY5MSAxMS42MDYgMTYuOTM5OUMxMS45NDE0IDE2LjkxNTYgMTIuMjM3OSAxNi43MzA5IDEyLjQxNzggMTYuNDQ0MUwxNy4wMDE4IDkuMTE4MzdDMTcuMTUyNSA4Ljg3MDQ2IDE3LjA3OTYgOC41NDQ3NiAxNi44MzE2IDguMzg5MjFaIiBmaWxsPSIjMDBDMzlCIi8+Cjwvc3ZnPgo="
+									alt="Uploaded"
+								/>
+								<p className="text-[#00C39B] text-lg">
+									{uploadProgress === 100 ? 'Uploaded' : 'Uploading'}
+								</p>
+							</div>
+						)}
 					</div>
-					<p className="text-3xl font-semibold">100%</p>
+					<p className="text-3xl font-semibold">{uploadProgress}%</p>
 				</span>
+				<div
+					className="absolute bottom-[0.5px] left-0 h-full min-h-1 max-h-1 bg-[#00C39B] transition-all duration-300 rounded-b-[10px]"
+					style={{ width: `${uploadProgress}%`}}
+				></div>
 			</div>
 			<div className="w-[70%] bg-white p-6 rounded-lg shadow-2xl ">
 				{/* Content */}

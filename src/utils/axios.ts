@@ -1,22 +1,32 @@
 import axios from 'axios';
+import { io, Socket } from 'socket.io-client';
 
-export const baseURL = 'http://localhost:3000'
+export const baseURL = 'http://localhost:3000';
 // Tạo instance của axios với cấu hình cơ bản
 const axiosInstance = axios.create({
 	baseURL: baseURL, // URL gốc của API
-	timeout: 10000, // Thời gian chờ (tính bằng ms)
+	timeout: 100000, // Thời gian chờ (tính bằng ms)
 	headers: {
 		'Content-Type': 'application/json',
 	},
+});
+
+// Khởi tạo Socket.io
+export const socket: Socket = io(baseURL);
+
+// Đợi cho đến khi kết nối thành công trước khi sử dụng socket.id
+socket.on('connect', () => {
+	console.log(`Connected with Socket ID: ${socket.id}`);
+	console.log(socket.id);
 });
 
 // Thêm interceptor để xử lý trước khi gửi request
 axiosInstance.interceptors.request.use(
 	(config) => {
 		// Thêm token vào header nếu có
-		const userId = localStorage.getItem('x-client-id')
-		if(userId){
-			config.headers['x-client-id'] = `${userId}`
+		const userId = localStorage.getItem('x-client-id');
+		if (userId) {
+			config.headers['x-client-id'] = `${userId}`;
 		}
 
 		const accessToken = localStorage.getItem('access-token');
@@ -24,9 +34,9 @@ axiosInstance.interceptors.request.use(
 			config.headers['authorization'] = `${accessToken}`;
 		}
 
-		const refreshToken = localStorage.getItem('refresh-token')
-		if(refreshToken){
-			config.headers['refresh-token'] = `${refreshToken}`
+		const refreshToken = localStorage.getItem('refresh-token');
+		if (refreshToken) {
+			config.headers['refresh-token'] = `${refreshToken}`;
 		}
 
 		return config;
