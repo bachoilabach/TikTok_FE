@@ -1,6 +1,8 @@
 import { Avatar } from '@material-tailwind/react';
+import { useUser } from '../context/UserContext';
 
 export default function HeaderUpload() {
+	const {user} = useUser()
 	return (
 		<div className="flex pl-5 pr-14 min-h-16 items-center border-b justify-between">
 			<div className="flex items-center space-x-3 hover:cursor-pointer">
@@ -16,7 +18,7 @@ export default function HeaderUpload() {
 			</div>
 			<div>
 				<Avatar
-					src="https://danviet.mediacdn.vn/upload/2-2019/images/2019-04-02/Vi-sao-Kha-Banh-tro-thanh-hien-tuong-dinh-dam-tren-mang-xa-hoi-khabanh-1554192528-width660height597.jpg"
+					src={user?.photoProfile}
 					alt=""
 					size="sm"
 					variant="circular"
