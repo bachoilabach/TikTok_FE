@@ -30,7 +30,7 @@ export default function DemoScreen({ src }: DemoScreenProps) {
 		setSelectedTab(tab);
 	};
 
-	useEffect(() => {}, [src]);
+	// useEffect(() => {}, [src]);
 
 	return (
 		<div className="w-full">
