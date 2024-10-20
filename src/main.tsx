@@ -5,9 +5,9 @@ import './index.css';
 import { UserProvider } from './context/UserContext.tsx';
 
 createRoot(document.getElementById('root')!).render(
-	<StrictMode>
+	// <StrictMode>
 		<UserProvider>
 			<App />
 		</UserProvider>
-	</StrictMode>
+	// </StrictMode>
 );
