@@ -2,7 +2,7 @@ import axiosInstance from '../utils/axios';
 
 const handleLogin = async (username: string, password: string) => {
 	try {
-		const response = await axiosInstance.post('/api/user/login', {
+		const response = await axiosInstance.post('/api/access/login', {
 			username,
 			password,
 		});
@@ -23,7 +23,7 @@ const handleLogin = async (username: string, password: string) => {
 };
 
 const handleLogoutApi = async () => {
-	await axiosInstance.post('/api/user/logout');
+	await axiosInstance.post('/api/access/logout');
 };
 
 const handleSignUpApi = async (
@@ -33,7 +33,7 @@ const handleSignUpApi = async (
 	phone: string
 ) => {
 	try {
-		const response = await axiosInstance.post('/api/user/signup', {
+		const response = await axiosInstance.post('/api/access/signup', {
 			email,
 			username,
 			password,
