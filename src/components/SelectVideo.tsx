@@ -11,18 +11,16 @@ export default function SelectVideo() {
 		}
 	};
 
-	useEffect(() => {
-	}, [selectedFile]);
+	useEffect(() => {}, [selectedFile]);
 
 	return (
 		<div className="flex justify-center pt-6">
 			{/* Upload */}
-				{!selectedFile ? (
-			<div className="w-[73%] bg-white p-9 h-[100%] rounded-lg shadow-2xl">
-				{/* Select Video */}
+			{!selectedFile ? (
+				<div className="w-[73%] bg-white p-9 h-[100%] rounded-lg shadow-2xl">
+					{/* Select Video */}
 					<div>
 						<label
-							htmlFor="dropzone-file"
 							className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600 h-[540px]">
 							<div className="flex flex-col items-center justify-center pt-5 pb-6">
 								<svg
@@ -107,10 +105,10 @@ export default function SelectVideo() {
 							</span>
 						</div>
 					</div>
-			</div>
-				) : (
-					<UploadVideo file={selectedFile}/>
-				)}
+				</div>
+			) : (
+				<UploadVideo file={selectedFile} />
+			)}
 		</div>
 	);
 }
