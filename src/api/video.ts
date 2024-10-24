@@ -36,4 +36,15 @@ const handleUploadVideoToCloudApi = async (video: File) => {
 	}
 };
 
-export { handleGetAllVideoApi, handleUploadVideoToCloudApi };
+const createVideoApi = async (videoData: unknown) => {
+	try {
+		const response = await axiosInstance.post('/api/video/create-video', {
+			videoData,
+		});
+		return response.data;
+	} catch (error) {
+		console.error(error);
+	}
+};
+
+export { handleGetAllVideoApi, handleUploadVideoToCloudApi, createVideoApi };
