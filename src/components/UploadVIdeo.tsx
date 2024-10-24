@@ -2,12 +2,19 @@ import { Radio, Switch } from '@material-tailwind/react';
 import { ChangeEvent, useEffect, useState } from 'react';
 import ActionButtons from './ActionButtons';
 import DemoScreen from './DemoScreen';
-import { handleUploadVideoToCloudApi } from '../api/video';
+import { createVideoApi, handleUploadVideoToCloudApi } from '../api/video';
 import { socket } from '../utils/axios';
 import { toast } from 'react-toastify';
 
 interface UploadVideoProps {
 	file: File;
+}
+
+export interface CreateVideo {
+	title: string;
+	videoUrl: string;
+	thumbnailUrl: string;
+	duration: string;
 }
 
 type option = {
@@ -47,28 +54,34 @@ export default function UploadVideo({ file }: UploadVideoProps) {
 	});
 	const [src, setSrc] = useState<string>('');
 	// * State video content
-	const [valueDesripton, setValueDesription] = useState<string>('');
+	const [valueTitle, setValueTitle] = useState<string>('');
 	const [selectedOption, setSelectedOption] = useState('Everyone');
 	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-	const [uploadResponse, setUploadResponse] = useState(null);
-	const [uploadProgress, setUploadProgress] = useState<number>(0); // Giá trị ban đầu là 0
+	const [uploadProgress, setUploadProgress] = useState<number>(0);
+	const [videoData, setVideoData] = useState<CreateVideo | null>(null);
 
 	const handleSelect = (option: string) => {
 		setSelectedOption(option);
 		setIsDropdownOpen(false); // Ẩn danh sách khi đã chọn
 	};
 
-	const handleChangeDesription = (e: ChangeEvent<HTMLTextAreaElement>) => {
-		setValueDesription(e.target.value);
+	const handleChangeTitle = (e: ChangeEvent<HTMLTextAreaElement>) => {
+		setValueTitle(e.target.value);
 	};
 
 	const uploadVideoToCloud = async () => {
 		try {
 			const response = await handleUploadVideoToCloudApi(file);
-			setUploadResponse(response);
+			const newVideoData: CreateVideo = {
+				title: valueTitle,
+				videoUrl: response.metadata.url,
+				thumbnailUrl: response.metadata.thumbnailUrl,
+				duration: response.metadata.duration,
+			};
+			setVideoData(newVideoData);
+			toast.success('Upload Video to cloud success');
 		} catch (error) {
 			console.error('Upload failed:', error);
-			// Thông báo lỗi nếu cần
 		}
 	};
 
@@ -97,11 +110,11 @@ export default function UploadVideo({ file }: UploadVideoProps) {
 		};
 
 		uploadVideoToCloud();
-
-		if(uploadResponse){
-			toast.success('Upload Video to cloud success')
+		if (videoData) {
+			toast.success('Upload Video to cloud success');
 		}
 
+		console.log(videoData);
 		return () => {
 			URL.revokeObjectURL(objectURL);
 		};
@@ -118,6 +131,16 @@ export default function UploadVideo({ file }: UploadVideoProps) {
 			socket.off('uploadProgress');
 		};
 	}, []);
+
+	// Cập nhật videoData khi valueTitle thay đổi
+	useEffect(() => {
+		if (videoData) {
+			setVideoData((prev) => ({
+				...prev!,
+				title: valueTitle, // Cập nhật title
+			}));
+		}
+	}, [valueTitle]);
 
 	return (
 		<div className="flex flex-col items-center w-full space-y-3 ">
@@ -194,8 +217,7 @@ export default function UploadVideo({ file }: UploadVideoProps) {
 				</span>
 				<div
 					className="absolute bottom-[0.5px] left-0 h-full min-h-1 max-h-1 bg-[#00C39B] transition-all duration-300 rounded-b-[10px]"
-					style={{ width: `${uploadProgress}%`}}
-				></div>
+					style={{ width: `${uploadProgress}%` }}></div>
 			</div>
 			<div className="w-[70%] bg-white p-6 rounded-lg shadow-2xl ">
 				{/* Content */}
@@ -210,8 +232,8 @@ export default function UploadVideo({ file }: UploadVideoProps) {
 									aria-multiline
 									aria-valuemin={0}
 									aria-valuemax={4000}
-									value={valueDesripton}
-									onChange={handleChangeDesription}
+									value={valueTitle}
+									onChange={handleChangeTitle}
 									className="min-h-[63px] px-5 py-3 w-full text-lg text-gray-900 bg-[#0000000D] rounded-lg border outline-none resize-none"
 									placeholder="Write your thoughts here..."></textarea>
 							</span>
@@ -336,7 +358,7 @@ export default function UploadVideo({ file }: UploadVideoProps) {
 				</div>
 				<span className="block w-[105%] border -ml-6 mt-5 mb-4"></span>
 
-				<ActionButtons />
+				<ActionButtons videoData={videoData} />
 			</div>
 		</div>
 	);
