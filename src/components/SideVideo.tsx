@@ -57,14 +57,14 @@ export default function SideVideo({likeQuantity,commentQuantity}: SideVideoProps
 						src="https://danviet.mediacdn.vn/upload/2-2019/images/2019-04-02/Vi-sao-Kha-Banh-tro-thanh-hien-tuong-dinh-dam-tren-mang-xa-hoi-khabanh-1554192528-width660height597.jpg"
 						alt="kha banh"
 						variant="circular"
-						className="cursor-pointer w-14 h-[56px]"
+						className="cursor-pointer w-12 h-[48px]"
 						placeholder={undefined}
 						onPointerEnterCapture={undefined}
 						onPointerLeaveCapture={undefined}
 					/>
 					{showFollowIcon && (
 						<div
-							className="absolute top-10 right-4 w-6 h-[24px] rounded-full bg-[#ff4b69] flex items-center justify-center cursor-pointer"
+							className="absolute top-9 right-3 w-4 h-[16px] rounded-full bg-[#ff4b69] flex items-center justify-center cursor-pointer"
 							onClick={handleFollowClick}>
 							<FontAwesomeIcon icon={icon} />
 						</div>
@@ -73,21 +73,22 @@ export default function SideVideo({likeQuantity,commentQuantity}: SideVideoProps
 			</Link>
 			<div className="flex flex-col items-center">
 				<span
-					className="w-14 h-[56px] bg-[#ffffff1f] rounded-full flex items-center justify-center hover:cursor-pointer hover:"
+					className="w-12 h-[48px] bg-[#ffffff1f] rounded-full flex items-center justify-center hover:cursor-pointer hover:"
 					onClick={handleClickLike}>
 					<FontAwesomeIcon
 						icon={faHeart}
-						fontSize={24}
+						fontSize={22}
 						className={`${like ? 'text-red-600' : 'text-[#E9E9E9]'}`}
 					/>
 				</span>
 				<p className="font-semibold mt-1 text-sm">{localLikeQuantity}</p>
 			</div>
-
+			
+			{/* Comment */}
 			<div className="flex flex-col items-center">
 				<Link to={''}>
-					<span className="w-14 h-[56px] bg-[#ffffff1f] rounded-full flex items-center justify-center hover:cursor-pointer text-[#E9E9E9]">
-						<FontAwesomeIcon icon={faCommentDots} fontSize={24} />
+					<span className="w-12 h-[48px] bg-[#ffffff1f] rounded-full flex items-center justify-center hover:cursor-pointer text-[#E9E9E9]">
+						<FontAwesomeIcon icon={faCommentDots} fontSize={22} />
 					</span>
 				</Link>
 				<p className="font-semibold mt-1 text-sm">{localCommentQuantity}</p>
@@ -95,11 +96,11 @@ export default function SideVideo({likeQuantity,commentQuantity}: SideVideoProps
 
 			<div className="flex flex-col items-center">
 				<span
-					className="w-14 h-[56px] bg-[#ffffff1f] rounded-full flex items-center justify-center hover:cursor-pointer text-[#E9E9E9]"
+					className="w-12 h-[48px] bg-[#ffffff1f] rounded-full flex items-center justify-center hover:cursor-pointer text-[#E9E9E9]"
 					onClick={handleClickSave}>
 					<FontAwesomeIcon
 						icon={faBookmark}
-						fontSize={23}
+						fontSize={22}
 						className={`${save ? 'text-[#FACE16]' : 'text-[#E9E9E9]'}`}
 					/>
 				</span>
@@ -107,13 +108,13 @@ export default function SideVideo({likeQuantity,commentQuantity}: SideVideoProps
 			</div>
 
 			<div className="flex flex-col items-center">
-				<span className="w-14 h-[56px] bg-[#ffffff1f] rounded-full flex items-center justify-center hover:cursor-pointer text-[#E9E9E9]">
-					<FontAwesomeIcon icon={faShare} fontSize={23} />
+				<span className="w-12 h-[48px] bg-[#ffffff1f] rounded-full flex items-center justify-center hover:cursor-pointer text-[#E9E9E9]">
+					<FontAwesomeIcon icon={faShare} fontSize={22} />
 				</span>
 				<p className="font-semibold mt-1 text-sm">1000</p>
 			</div>
-			<span className="w-14 h-[56px] bg-[#ffffff1f] rounded-full flex items-center justify-center hover:cursor-pointer text-[#E9E9E9]">
-				<FontAwesomeIcon icon={faEllipsis} fontSize={23} />
+			<span className="w-12 h-[48px] bg-[#ffffff1f] rounded-full flex items-center justify-center hover:cursor-pointer text-[#E9E9E9]">
+				<FontAwesomeIcon icon={faEllipsis} fontSize={22} />
 			</span>
 		</div>
 	);
