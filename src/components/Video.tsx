@@ -11,23 +11,26 @@ import {
 } from 'react';
 import { Link } from 'react-router-dom';
 import SideVideo from './SideVideo';
+import { handleGetUserByIdApi } from '../api/user';
+import { handleGetVideoLikedByUserId } from '../api/favourite';
 
 export interface VideoProps {
-	videoID: string;
-	userID: string;
+	_id: string;
+	userId: string;
 	title: string;
 	videoUrl: string;
 	duration: number;
 	view: number;
 	comments: number;
 	likes: number;
+	liked: boolean
 	// allowComment: number;
 	// whoCanView: number;
 	// createdDate: Date;
 }
 
 const Video = forwardRef<HTMLVideoElement, VideoProps>((props, ref) => {
-	const { videoID, userID, title, videoUrl, comments, likes } = props;
+	const { _id, userId, title, videoUrl, comments, likes,liked } = props;
 	// * State
 	const [play, setPlay] = useState<boolean>(true);
 	const [animate, setAnimate] = useState<boolean>(false);
@@ -41,6 +44,7 @@ const Video = forwardRef<HTMLVideoElement, VideoProps>((props, ref) => {
 	const [durationVideo, setDurationVideo] = useState<number>(0);
 	const videoRef = useRef<HTMLVideoElement | null>(null);
 	useImperativeHandle(ref, () => videoRef.current as HTMLVideoElement);
+	const [userName, setUserName] = useState<string>('');
 
 	// * Play / Pause
 	const handleClickPlay = () => {
@@ -111,18 +115,28 @@ const Video = forwardRef<HTMLVideoElement, VideoProps>((props, ref) => {
 		}
 	};
 
+	const handleGetUserById = async () => {
+		const response = await handleGetUserByIdApi(userId);
+		setUserName(response.metadata.username);
+	};
+
+	
+
 	useEffect(() => {
+		console.log(props);
+
 		const titleElement = titleRef.current;
 		if (titleElement) {
 			// Kiểm tra xem title có bị tràn ra khỏi container hay không
 			setIsOverflowing(titleElement.scrollWidth > titleElement.clientWidth);
 		}
+		handleGetUserById();
 	}, [title]);
 
 	return (
 		<div
-			className="flex space-x-4 h-[100%] w-[100%] justify-center pl-28"
-			key={videoID}>
+			className="flex space-x-4 h-[100%] w-full justify-center pl-28"
+			key={_id}>
 			<div
 				className={`relative h-[100%] rounded-2xl hover:cursor-pointer group flex flex-col items-center`}
 				style={{ width: `${(625 + 365) / 2}px` }}
@@ -238,7 +252,7 @@ const Video = forwardRef<HTMLVideoElement, VideoProps>((props, ref) => {
 					className="px-3 pb-2 absolute bottom-0 text-white w-full"
 					onClick={(e) => e.stopPropagation()}>
 					<Link to={''} className="font-semibold text-xl hover:underline">
-						{userID}
+						{userName}
 					</Link>
 					<div className="relative">
 						<p
@@ -286,7 +300,12 @@ const Video = forwardRef<HTMLVideoElement, VideoProps>((props, ref) => {
 					/>
 				</div>
 			</div>
-			<SideVideo likeQuantity={likes} commentQuantity={comments} />
+			<SideVideo
+				videoID={_id}
+				likeQuantity={likes}
+				commentQuantity={comments}
+				liked={liked}
+			/>
 		</div>
 	);
 });

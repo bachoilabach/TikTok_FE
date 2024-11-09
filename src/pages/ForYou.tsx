@@ -1,19 +1,39 @@
 import { useEffect, useRef, useState } from 'react';
 import Video, { VideoProps } from '../components/Video';
-import { handleGetAllVideoApi } from '../api/video'
+import { handleGetAllVideoApi } from '../api/video';
+import { handleGetVideoLikedByUserId } from '../api/favourite';
+
+interface VideoLiked {
+	videoId: string;
+	userId: string;
+}
 
 function ForYou() {
 	const videoRefs = useRef<(HTMLVideoElement | null)[]>([]); // Để lưu trữ các tham chiếu video
-	const [listVideo,setListVideo] = useState<VideoProps[]>([])
+	const [listVideo, setListVideo] = useState<VideoProps[]>([]);
+	const [videoLiked, setVideoLiked] = useState<VideoLiked[]>([]);
+	const [likedVideoIds, setLikedVideoIds] = useState<string[]>([]); // Thêm trạng thái lưu các video đã like
 
-	const handleGetVideos = async() => {
-		const response = await handleGetAllVideoApi()
-		setListVideo(response.metadata)
-	}
+	const handleGetVideoLiked = async () => {
+		const response = await handleGetVideoLikedByUserId();
+		setVideoLiked(response.metadata);
+		const likedIds = response.metadata.map((video: VideoLiked) => video.videoId);
+		setLikedVideoIds(likedIds); // Cập nhật danh sách video đã like
+	};
 
-	useEffect(()=>{
-		handleGetVideos()
-	},[])
+	const handleGetVideos = async () => {
+		const response = await handleGetAllVideoApi();
+		setListVideo(response.metadata);
+	};
+
+	// Dùng useEffect để xử lý thứ tự gọi API
+	useEffect(() => {
+		const fetchData = async () => {
+			await handleGetVideoLiked(); // Lấy danh sách video đã like trước
+			await handleGetVideos(); // Sau đó mới lấy tất cả video
+		};
+		fetchData();
+	}, []);
 
 	useEffect(() => {
 		const observer = new IntersectionObserver(
@@ -36,7 +56,6 @@ function ForYou() {
 				observer.observe(video);
 			}
 		});
-
 		// Cleanup observer khi component unmount
 		return () => {
 			videoRefs.current.forEach((video) => {
@@ -54,21 +73,22 @@ function ForYou() {
 		>
 			{listVideo.map((video, index) => (
 				<div
-					key={video.videoID}
+					key={video._id}
 					style={{ height: 'calc(100vh - 98px)' }} // Điều chỉnh theo chiều cao khung nhìn
 					className="w-full snap-start flex-1">
 					<Video
 						ref={(el) => {
 							videoRefs.current[index] = el;
 						}}
-						videoID={video.videoID}
-						userID={video.userID}
+						_id={video._id}
+						userId={video.userId}
 						title={video.title}
 						videoUrl={video.videoUrl}
 						duration={video.duration}
 						view={video.view}
 						comments={video.comments}
 						likes={video.likes}
+						liked={likedVideoIds.includes(video._id)}
 					/>
 				</div>
 			))}

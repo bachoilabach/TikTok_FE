@@ -47,4 +47,14 @@ const handleSignUpApi = async (
 	}
 };
 
-export { handleLogin, handleLogoutApi, handleSignUpApi };
+const handleGetUserByIdApi = async(userId: string) =>{
+	try {
+		const response = await axiosInstance.get(`/api/user/${userId}`)
+		return response.data
+	} catch (error) {
+		console.log(error)
+		throw error
+	}
+}
+
+export { handleLogin, handleLogoutApi, handleSignUpApi,handleGetUserByIdApi };
