@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import Video, { VideoProps } from '../components/Video';
 import { handleGetAllVideoApi } from '../api/video';
 import { handleGetVideoLikedByUserId } from '../api/favourite';
+import { useUser } from '../context/UserContext';
 
 interface VideoLiked {
 	videoId: string;
@@ -9,6 +10,7 @@ interface VideoLiked {
 }
 
 function ForYou() {
+	const {user} = useUser()
 	const videoRefs = useRef<(HTMLVideoElement | null)[]>([]); // Để lưu trữ các tham chiếu video
 	const [listVideo, setListVideo] = useState<VideoProps[]>([]);
 	const [videoLiked, setVideoLiked] = useState<VideoLiked[]>([]);
@@ -29,7 +31,9 @@ function ForYou() {
 	// Dùng useEffect để xử lý thứ tự gọi API
 	useEffect(() => {
 		const fetchData = async () => {
-			await handleGetVideoLiked(); // Lấy danh sách video đã like trước
+			if(user){
+				await handleGetVideoLiked(); // Lấy danh sách video đã like trước
+			}
 			await handleGetVideos(); // Sau đó mới lấy tất cả video
 		};
 		fetchData();

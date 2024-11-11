@@ -23,14 +23,14 @@ export interface VideoProps {
 	view: number;
 	comments: number;
 	likes: number;
-	liked: boolean
+	liked: boolean;
 	// allowComment: number;
 	// whoCanView: number;
 	// createdDate: Date;
 }
 
 const Video = forwardRef<HTMLVideoElement, VideoProps>((props, ref) => {
-	const { _id, userId, title, videoUrl, comments, likes,liked } = props;
+	const { _id, userId, title, videoUrl, comments, likes, liked } = props;
 	// * State
 	const [play, setPlay] = useState<boolean>(true);
 	const [animate, setAnimate] = useState<boolean>(false);
@@ -120,8 +120,6 @@ const Video = forwardRef<HTMLVideoElement, VideoProps>((props, ref) => {
 		setUserName(response.metadata.username);
 	};
 
-	
-
 	useEffect(() => {
 		console.log(props);
 
@@ -139,7 +137,10 @@ const Video = forwardRef<HTMLVideoElement, VideoProps>((props, ref) => {
 			key={_id}>
 			<div
 				className={`relative h-[100%] rounded-2xl hover:cursor-pointer group flex flex-col items-center`}
-				style={{ width: `${(625 + 365) / 2}px` }}
+				style={{
+					minWidth: `${(625 + 365) / 2}px`,
+					maxWidth: `${(625 + 365) / 2}px`,
+				}}
 				onClick={handleClickPlay}>
 				<video
 					autoPlay
@@ -305,6 +306,7 @@ const Video = forwardRef<HTMLVideoElement, VideoProps>((props, ref) => {
 				likeQuantity={likes}
 				commentQuantity={comments}
 				liked={liked}
+				userId={userId}
 			/>
 		</div>
 	);

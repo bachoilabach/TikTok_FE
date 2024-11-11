@@ -6,6 +6,7 @@ import UploadPage from './pages/UploadPage';
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+
 export default function App() {
 	return (
 		<>
@@ -13,6 +14,7 @@ export default function App() {
 				<Routes>
 					<Route path="/" element={<MainLayout />}>
 						<Route index element={<ForYou />} />
+						<Route path='/:userId/video/:videoId' element={<ForYou />}/>
 					</Route>
 					<Route path="/upload" element={<UploadLayout />}>
 						<Route index element={<UploadPage />} />
