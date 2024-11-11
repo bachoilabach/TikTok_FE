@@ -11,25 +11,32 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Avatar } from '@material-tailwind/react';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { handleCreateFavouriteVideo, handleDeleteFavouriteVideo } from '../api/favourite';
+import { useUser } from '../context/UserContext';
 
 interface SideVideoProps {
+	videoID: string;
 	likeQuantity: number;
 	commentQuantity: number;
+	liked: boolean
 };
 
-export default function SideVideo({likeQuantity,commentQuantity}: SideVideoProps) {
-	const [like, setLike] = useState<boolean>(false);
+export default function SideVideo({videoID,likeQuantity,commentQuantity,liked}: SideVideoProps) {
+	const {user} = useUser()
+	const [like, setLike] = useState<boolean>(liked);
 	const [localLikeQuantity, setLocalLikeQuantity] = useState<number>(likeQuantity);
 	const [save, setSave] = useState<boolean>(false);
 	const [showFollowIcon, setShowFollowIcon] = useState<boolean>(true);
 	const [icon, setIcon] = useState(faPlus);
 	const [localCommentQuantity, setLocalCommentQuantity] = useState<number>(commentQuantity);
 
-	const handleClickLike = () => {
+	const handleClickLike = async() => {
 		if (like) {
 			setLocalLikeQuantity(likeQuantity);
+			await handleDeleteFavouriteVideo(videoID);
 		} else {
 			setLocalLikeQuantity(likeQuantity + 1);
+			await handleCreateFavouriteVideo(videoID)
 		}
 		setLike(!like);
 	};
@@ -46,7 +53,7 @@ export default function SideVideo({likeQuantity,commentQuantity}: SideVideoProps
 	};
 
 	useEffect(()=>{
-		
+		// console.log(liked)
 	},[])
 
 	return (
@@ -54,7 +61,7 @@ export default function SideVideo({likeQuantity,commentQuantity}: SideVideoProps
 			<Link to={''}>
 				<div className='relative mb-2'>
 					<Avatar
-						src="https://danviet.mediacdn.vn/upload/2-2019/images/2019-04-02/Vi-sao-Kha-Banh-tro-thanh-hien-tuong-dinh-dam-tren-mang-xa-hoi-khabanh-1554192528-width660height597.jpg"
+						src={user?.photoProfile}
 						alt="kha banh"
 						variant="circular"
 						className="cursor-pointer w-12 h-[48px]"
