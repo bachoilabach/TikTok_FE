@@ -10,7 +10,7 @@ interface VideoLiked {
 }
 
 function ForYou() {
-	const {user} = useUser()
+	const { user } = useUser();
 	const videoRefs = useRef<(HTMLVideoElement | null)[]>([]); // Để lưu trữ các tham chiếu video
 	const [listVideo, setListVideo] = useState<VideoProps[]>([]);
 	const [videoLiked, setVideoLiked] = useState<VideoLiked[]>([]);
@@ -19,25 +19,24 @@ function ForYou() {
 	const handleGetVideoLiked = async () => {
 		const response = await handleGetVideoLikedByUserId();
 		setVideoLiked(response.metadata);
-		const likedIds = response.metadata.map((video: VideoLiked) => video.videoId);
-		setLikedVideoIds(likedIds); // Cập nhật danh sách video đã like
+		const likedIds = response.metadata.map(
+			(video: VideoLiked) => video.videoId
+		);
+		setLikedVideoIds(likedIds);
 	};
 
 	const handleGetVideos = async () => {
 		const response = await handleGetAllVideoApi();
 		setListVideo(response.metadata);
 	};
-
 	// Dùng useEffect để xử lý thứ tự gọi API
+	const fetchData = async () => {
+		await handleGetVideoLiked(); // Lấy danh sách video đã like trước
+		await handleGetVideos(); // Sau đó mới lấy tất cả video
+	};
 	useEffect(() => {
-		const fetchData = async () => {
-			if(user){
-				await handleGetVideoLiked(); // Lấy danh sách video đã like trước
-			}
-			await handleGetVideos(); // Sau đó mới lấy tất cả video
-		};
-		fetchData();
-	}, []);
+		fetchData()
+	}, [user]);
 
 	useEffect(() => {
 		const observer = new IntersectionObserver(

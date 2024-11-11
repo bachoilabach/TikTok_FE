@@ -15,8 +15,10 @@ import {
 	handleDeleteFavouriteVideo,
 } from '../api/favourite';
 import { useUser } from '../context/UserContext';
-import Comment from './Comment';
 import { Avatar } from '@material-tailwind/react';
+import { handleGetUserByIdApi } from '../api/user';
+import { toast } from 'react-toastify';
+import CommentModal from './CommentModal';
 
 interface SideVideoProps {
 	videoID: string;
@@ -44,8 +46,12 @@ export default function SideVideo({
 	const [localCommentQuantity, setLocalCommentQuantity] =
 		useState<number>(commentQuantity);
 	const [showComment, setShowComment] = useState<boolean>(false); // State để điều khiển hiển thị Comment
+	const [userAva, setUserAva] = useState('');
 
 	const handleClickLike = async () => {
+		if(!user){
+			toast.warn('Bạn nên đăng nhập trước khi bấm like!')
+		}
 		if (like) {
 			setLocalLikeQuantity(likeQuantity);
 			await handleDeleteFavouriteVideo(videoID);
@@ -77,12 +83,21 @@ export default function SideVideo({
 		}
 	};
 
+	const handleSetUserAva = async () => {
+		const response = await handleGetUserByIdApi(userId);
+		setUserAva(response.metadata.photoProfile);
+	};
+
+	useEffect(() => {
+		handleSetUserAva();
+	}, []);
+
 	return (
 		<div className="flex space-x-4">
 			<div className="text-white flex flex-col justify-end h-[100%] space-y-2">
 				<div className="relative mb-2">
 					<Avatar
-						src={user?.photoProfile}
+						src={userAva}
 						alt="User Avatar"
 						variant="circular"
 						className="cursor-pointer w-12 h-[48px]"
@@ -147,7 +162,7 @@ export default function SideVideo({
 			</div>
 
 			{/* Hiển thị Comment khi showComment là true */}
-			{showComment && <Comment />}
+			{showComment && <CommentModal />}
 		</div>
 	);
 }
