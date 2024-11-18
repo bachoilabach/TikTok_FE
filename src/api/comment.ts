@@ -15,4 +15,15 @@ const handleGetCommentsApi = async (videoId: string, commentParentId: string | n
 	}
 };
 
-export {handleGetCommentsApi}
+const handleCreateCommentApi = async (videoId: string, userId: string, commentContent: string,commentParentId: string | null) =>{
+	try {
+		const response = await axiosInstance.post('/api/comment/create-comment',{
+			videoId,userId,commentContent,commentParentId
+		})
+		return response.data
+	} catch (error) {
+		console.log(error)
+	}
+}
+
+export {handleGetCommentsApi,handleCreateCommentApi}

@@ -68,9 +68,7 @@ function Header() {
 		toast.success('Log out succesfully');
 	};
 
-	useEffect(() => {
-		console.log(isLoading);
-	}, [user]);
+	useEffect(() => {}, [user]);
 
 	return (
 		<div className="bg-[#121212] w-full flex items-center px-5 justify-between">
