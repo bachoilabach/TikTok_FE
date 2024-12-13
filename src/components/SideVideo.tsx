@@ -19,6 +19,8 @@ import { Avatar } from '@material-tailwind/react';
 import { handleGetUserByIdApi } from '../api/user';
 import { toast } from 'react-toastify';
 import CommentModal from './CommentModal';
+import { handleFollowApi, handleGetAllFollowApi } from '../api/follow';
+import { Following } from './SideBar';
 
 interface SideVideoProps {
 	videoID: string;
@@ -47,10 +49,21 @@ export default function SideVideo({
 		useState<number>(commentQuantity);
 	const [showComment, setShowComment] = useState<boolean>(false); // State để điều khiển hiển thị Comment
 	const [userAva, setUserAva] = useState('');
+	const [listFollowing, setListFollowing] = useState<Following[]>([]);
+
+	const handleGetAllFollow = async () => {
+		const response = await handleGetAllFollowApi();
+		setListFollowing(response.metadata);
+		const followingIds = response.metadata.map((user: { _id: string; }) => user._id);
+		isFollowing = followingIds.includes(userId);
+		if (isFollowing) {
+			setShowFollowIcon(false);
+		}
+	};
 
 	const handleClickLike = async () => {
-		if(!user){
-			toast.warn('Bạn nên đăng nhập trước khi bấm like!')
+		if (!user) {
+			toast.warn('Bạn nên đăng nhập trước khi bấm like!');
 		}
 		if (like) {
 			setLocalLikeQuantity(likeQuantity);
@@ -66,11 +79,16 @@ export default function SideVideo({
 		setSave(!save);
 	};
 
-	const handleFollowClick = () => {
+	// Kiểm tra xem userId đã được follow hay chưa
+	let isFollowing: boolean;
+
+	const handleFollowClick = async () => {
+		await handleFollowApi(userId);
 		setIcon(faCheck);
 		setTimeout(() => {
 			setShowFollowIcon(false);
 		}, 2000);
+		toast.success('Follow success');
 	};
 
 	const handleCommentClick = () => {
@@ -89,7 +107,12 @@ export default function SideVideo({
 	};
 
 	useEffect(() => {
+		if (user?._id === userId) {
+			setShowFollowIcon(false);
+		}
 		handleSetUserAva();
+		handleGetAllFollow();
+		
 	}, []);
 
 	return (

@@ -4,7 +4,14 @@ import { Avatar, Typography } from '@material-tailwind/react';
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
-
+import { handleGetAllFollowApi } from '../api/follow';
+export type Following = {
+	_id: string;
+	fullname: string;
+	username: string;
+	email: string;
+	photoProfile: string;
+};
 function SideBar() {
 	// * Change color button when user click
 	const [selectedPath, setSelectedPath] = useState<string>('/');
@@ -57,27 +64,15 @@ function SideBar() {
 	];
 
 	// * Follower
-	type following = {
-		avatar?: string;
-		fullName: string;
-		userName: string;
+	const [listFollowing, setListFollowing] = useState<Following[]>([]);
+
+	const handleGetAllFollow = async () => {
+		const response = await handleGetAllFollowApi();
+		setListFollowing(response.metadata);
 	};
 
-	const [listFollowing, setListFollowing] = useState<following[]>([]);
-
 	useEffect(() => {
-		setListFollowing([
-			{
-				avatar: '',
-				fullName: 'khabanh',
-				userName: 'Khá bảnh',
-			},
-			{
-				avatar: 'https://nguoinoitieng.tv/images/nnt/100/0/bej1.jpg',
-				fullName: 'phamtuan',
-				userName: 'Phạm Tuấn',
-			},
-		]);
+		handleGetAllFollow();
 	}, []);
 
 	return (
@@ -127,13 +122,13 @@ function SideBar() {
 						<div>
 							{listFollowing.map((following) => (
 								<Link
-									key={following.fullName}
+									key={following._id}
 									className="mt-2 p-2 flex items-center rounded hover:bg-[#ffffff1f]"
 									to={''}>
 									<div className="h-8">
 										<Avatar
 											src={
-												following.avatar ||
+												following.photoProfile ||
 												'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ2FoNFztYrjisKytpNypxcpYf_tQqGme8q5Q&s'
 											}
 											variant="circular"
@@ -152,14 +147,14 @@ function SideBar() {
 											placeholder={undefined}
 											onPointerEnterCapture={undefined}
 											onPointerLeaveCapture={undefined}>
-											{following.fullName}
+											{following.fullname}
 										</Typography>
 										<Typography
 											variant="small"
 											placeholder={undefined}
 											onPointerEnterCapture={undefined}
 											onPointerLeaveCapture={undefined}>
-											{following.userName}
+											{following.username}
 										</Typography>
 									</div>
 								</Link>
@@ -168,12 +163,11 @@ function SideBar() {
 						</div>
 					</div>
 				) : (
-					<div className='text-xl text-[#878787]'>
+					<div className="text-xl text-[#878787]">
 						Log in to follow creators, like videos, and view comments.
 					</div>
 				)}
 
-				
 				<span className="w-[90%] h-[1px] bg-[#ffffff1f]"></span>
 
 				{/* footer side bar */}
