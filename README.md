@@ -48,3 +48,9 @@ export default tseslint.config({
   },
 })
 ```
+### Interfaces
+![image](https://github.com/user-attachments/assets/fb193b32-89f2-4bd4-a2f7-aed6238a4e58)
+![image](https://github.com/user-attachments/assets/6bb7c2c9-aac1-448b-b034-cd526dc56fc5)
+![image](https://github.com/user-attachments/assets/d03b0bff-03dd-4a62-b158-7df233a1ba2c)
+![image](https://github.com/user-attachments/assets/709cac06-5a71-48db-be0a-3e5aa8b3d6ed)
+![image](https://github.com/user-attachments/assets/f170cfcb-5d0b-4dfa-9d7b-6caf0965fa39)
